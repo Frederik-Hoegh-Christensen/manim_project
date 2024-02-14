@@ -17,53 +17,82 @@ class FirstAbstractionLevel(Scene):
 
         # Play the operand table and set its entries to color BLACK to show an empty table
 
-        def push():
+        def push_num():
 
-            # stack_element = VGroup(rect, text).shift(UP*self.stack_height)
             stack_element = self.expression_group[self.counter]
+            enclosing_square = SurroundingRectangle(
+                stack_element, color=BLUE, buff=0.3)
+
+            if self.currNumStack == []:
+                target_position = (DOWN * 2) + LEFT * 5  # Adjust as needed
+
+            else:
+                temp_element = self.currNumStack.pop()
+                target_position = temp_element[1].get_top() + UP * 1 #TODO correct the space between stack elements
+                #target_position = (DOWN * 1) + LEFT * 5
+
+            self.currNumStack.append((stack_element, enclosing_square))
+
+            # Animate moving the stack_element and the square to the target position
+            self.play(
+                stack_element.animate.move_to(target_position),
+                enclosing_square.animate.move_to(target_position)
+            )
+
+
+        def push_ope():
+
+            stack_element = self.expression_group[self.counter]
+            enclosing_square = SurroundingRectangle(
+                stack_element, color=BLUE, buff=0.3)
+
+            if self.currOperatorStack == []:
+                target_position = (DOWN * 2) + RIGHT * 5  # Adjust as needed
+
+            else:
+                temp_element = self.currOperatorStack.pop()
+                target_position = temp_element[1].get_top() + UP * 1 #TODO correct the space between stack elements
+                #target_position = (DOWN * 1) + LEFT * 5
+
+            self.currOperatorStack.append((stack_element, enclosing_square))
+
+            # Animate moving the stack_element and the square to the target position
+            self.play(
+                stack_element.animate.move_to(target_position),
+                enclosing_square.animate.move_to(target_position)
+            )
+        
+        def eval():
+            #TODO eval stuff
+            return None
+
+
+        
+        for i in range(len(self.expression_group)):
+            next_elem = None###
+            if (self.counter >= len(self.expression_group)):
+                self.wait(2)
+                break
 
             if (self.expression_list[self.counter] == "("):
                 self.counter += 1
+                #TODO remove
+                continue
 
             elif (self.expression_list[self.counter] == ")"):
                 # TODO evaluation
                 self.counter += 1
+                continue
 
             elif (self.expression_list[self.counter] == "+" or self.expression_list[self.counter] == "-"):
+                push_ope()
                 self.counter += 1
+                continue
 
             elif int(self.expression_list[self.counter]):
-
-                enclosing_square = SurroundingRectangle(
-                    stack_element, color=BLUE, buff=0.5)
-
-                if self.currNumStack == []:
-                    target_position = (DOWN * 2) + LEFT * 5  # Adjust as needed
-
-                else:
-                    temp_element = self.currNumStack.pop()
-                    temp_position = temp_element  # get top
-                    target_position = (DOWN * 1) + LEFT * 5
-
-                self.currNumStack.append((stack_element, enclosing_square))
+                push_num()
                 self.counter += 1
-
-                # Animate moving the stack_element and the square to the target position
-                self.play(
-                    stack_element.animate.move_to(target_position),
-                    enclosing_square.animate.move_to(target_position)
-                )
-                # self.play(Create(stack_element))
-                # self.play(Create(enclosing_square))
-
-        push()
-        self.wait(1)
-        push()
-        self.wait(1)
-        push()
-        self.wait(1)
-        push()
-        self.wait(1)
+                continue
     #     self.num_table = MathTable([
     #         ["A"],
     #         ["B"],

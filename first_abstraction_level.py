@@ -28,17 +28,18 @@ class FirstAbstractionLevel(Scene):
 
             else:
                 temp_element = self.currNumStack.pop()
-                target_position = temp_element[1].get_top() + UP * 1 #TODO correct the space between stack elements
-                #target_position = (DOWN * 1) + LEFT * 5
+                # TODO correct the space between stack elements
+                target_position = temp_element[1].get_top() + UP * 1
+                # target_position = (DOWN * 1) + LEFT * 5
 
-            self.currNumStack.append((stack_element, enclosing_square))
+            self.currNumStack.append(
+                (stack_element, enclosing_square, self.expression_list[self.counter]))
 
             # Animate moving the stack_element and the square to the target position
             self.play(
                 stack_element.animate.move_to(target_position),
                 enclosing_square.animate.move_to(target_position)
             )
-
 
         def push_ope():
 
@@ -51,32 +52,41 @@ class FirstAbstractionLevel(Scene):
 
             else:
                 temp_element = self.currOperatorStack.pop()
-                target_position = temp_element[1].get_top() + UP * 1 #TODO correct the space between stack elements
-                #target_position = (DOWN * 1) + LEFT * 5
+                # TODO correct the space between stack elements
+                target_position = temp_element[1].get_top() + UP * 1
+                # target_position = (DOWN * 1) + LEFT * 5
 
-            self.currOperatorStack.append((stack_element, enclosing_square))
+            self.currOperatorStack.append(
+                (stack_element, enclosing_square, self.expression_list[self.counter]))
 
             # Animate moving the stack_element and the square to the target position
             self.play(
                 stack_element.animate.move_to(target_position),
                 enclosing_square.animate.move_to(target_position)
             )
-        
+
         def eval():
-            #TODO eval stuff
-            return None
+            # TODO eval stuff
 
+            num1 = int(self.currNumStack.pop()[2])
+            num2 = int(self.currNumStack.pop()[2])
+            ope = self.currOperatorStack.pop()[2]
+            if ope == "+":
+                result = num1 + num2
+            elif ope == "-":
+                result = num1 - num2
 
-        
+            return result
+
         for i in range(len(self.expression_group)):
-            next_elem = None###
+            next_elem = None
             if (self.counter >= len(self.expression_group)):
                 self.wait(2)
                 break
 
             if (self.expression_list[self.counter] == "("):
                 self.counter += 1
-                #TODO remove
+                # TODO remove
                 continue
 
             elif (self.expression_list[self.counter] == ")"):

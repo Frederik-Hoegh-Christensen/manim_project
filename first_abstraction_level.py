@@ -14,6 +14,7 @@ class FirstAbstractionLevel(Scene):
         self.wait(1)
         self.currNumStack = []
         self.currOperatorStack = []
+        self.eval_squares = []
 
         # Play the operand table and set its entries to color BLACK to show an empty table
 
@@ -65,38 +66,83 @@ class FirstAbstractionLevel(Scene):
                 enclosing_square.animate.move_to(target_position)
             )
 
+
+        def pop_num():
+            popped_ele1 = self.currNumStack.pop()
+            tex1 = popped_ele1[0]
+            square1 = popped_ele1[1]
+            str1 = popped_ele1[2]
+
+            if self.eval_squares == []:
+                target_position = DOWN + RIGHT * 1
+            else:
+                target_position = self.eval_squares[-1].get_left() + LEFT
+
+            self.eval_squares.append(square1)
+            self.play(
+                tex1.animate.move_to(target_position),
+                square1.animate.move_to(target_position)
+            )
+
+            self.wait(1)
+            return int(str1)
+        
+        def pop_ope():
+            popped_ele1 = self.currOperatorStack.pop()
+            tex1 = popped_ele1[0]
+            square1 = popped_ele1[1]
+            str1 = popped_ele1[2]
+
+            if self.eval_squares == []:
+                target_position = DOWN + RIGHT * 2
+            else:
+                target_position = self.eval_squares[-1].get_left() + LEFT
+
+            self.eval_squares.append(square1)
+            self.play(
+                tex1.animate.move_to(target_position),
+                square1.animate.move_to(target_position)
+            )
+
+            self.wait(1)
+            return str1
+           
+
+
+
         def eval():
             # TODO eval stuff
 
-            if not self.currNumStack:
-                # Handle the case when the list is empty
+            pop_num()
+            # if not self.currNumStack:
+            #     # Handle the case when the list is empty
 
-                raise ValueError("currNumStack is empty")
+            #     raise ValueError("currNumStack is empty")
 
-            print("NumStack before first pop:", self.currNumStack)
+            # print("NumStack before first pop:", self.currNumStack)
 
-            popped_ele = self.currNumStack.pop()
+            # popped_ele = self.currNumStack.pop()
 
-            num1 = int(popped_ele[2])
+            # num1 = int(popped_ele[2])
 
-            print("Popped Element 1:", popped_ele)
-            print("numstack after first pop:", self.currNumStack)
+            # print("Popped Element 1:", popped_ele)
+            # print("numstack after first pop:", self.currNumStack)
 
-            if not self.currNumStack:
-                # Handle the case when the list is empty after the first pop
-                raise ValueError("currNumStack is empty after the first pop")
+            # if not self.currNumStack:
+            #     # Handle the case when the list is empty after the first pop
+            #     raise ValueError("currNumStack is empty after the first pop")
 
-            num2 = int(self.currNumStack.pop()[2])
-            ope = self.currOperatorStack.pop()[2]
-            if ope == "+":
-                result = num1 + num2
-            elif ope == "-":
-                result = num1 - num2
+            # num2 = int(self.currNumStack.pop()[2])
+            # ope = self.currOperatorStack.pop()[2]
+            # if ope == "+":
+            #     result = num2 + num1
+            # elif ope == "-":
+            #     result = num2 - num1
 
-            result_string = str(result)
-            tex = MathTex(result_string)
+            # result_string = str(result)
+            # tex = MathTex(result_string)
 
-            return result_string, tex
+            # return result_string, tex
 
         for i in range(len(self.expression_group)):
             next_elem = self.expression_group[self.counter]
@@ -111,8 +157,43 @@ class FirstAbstractionLevel(Scene):
 
             elif (self.expression_list[self.counter] == ")"):
                 # TODO evaluation
-                result_string, tex = eval()
-                push_num(tex, result_string)
+                num1 = pop_num()
+                ope = pop_ope()
+                num2 = pop_num()
+                
+                if ope == "+":
+                    res_string = str(num2 + num1)
+                elif ope == "-":
+                    res_string = str(num2 - num1)
+                
+                # equals_tex = MathTex("=")
+                # equals = equals_tex.animate.move_to(self.eval_squares[0].get_right())
+                # self.play(FadeIn(equals))
+                # self.wait(1)
+                
+                equals_tex = MathTex("=")
+                # Move the equals_tex to the desired position
+                equals_tex.next_to(self.eval_squares[0], RIGHT)
+                # Then, play the FadeIn animation for equals_tex
+                self.play(FadeIn(equals_tex))
+                self.wait(1)
+
+                # res_tex = MathTex(res_string)
+                # res = res_tex.animate.move_to(equals_tex.get_right())
+                # self.play(FadeIn(res))
+                res_tex = MathTex(res_string)
+                # Position res_tex next to equals_tex
+                res_tex.next_to(equals_tex, RIGHT)
+                # Play the FadeIn animation for res_tex
+                self.play(FadeIn(res_tex))
+
+                push_num(res_tex, res_string)
+                self.eval_squares = []
+
+
+                
+                #result_string, tex = eval()
+                #push_num(tex, result_string)
                 self.counter += 1
 
             elif (self.expression_list[self.counter] == "+" or self.expression_list[self.counter] == "-"):

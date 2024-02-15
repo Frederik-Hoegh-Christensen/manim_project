@@ -27,7 +27,7 @@ class FirstAbstractionLevel(Scene):
                 target_position = (DOWN * 2) + LEFT * 5  # Adjust as needed
 
             else:
-                temp_element = self.currNumStack.pop()
+                temp_element = self.currNumStack[-1]
                 # TODO correct the space between stack elements
                 target_position = temp_element[1].get_top() + UP * 1
                 # target_position = (DOWN * 1) + LEFT * 5
@@ -51,7 +51,7 @@ class FirstAbstractionLevel(Scene):
                 target_position = (DOWN * 2) + RIGHT * 5  # Adjust as needed
 
             else:
-                temp_element = self.currOperatorStack.pop()
+                temp_element = self.currOperatorStack[-1]
                 # TODO correct the space between stack elements
                 target_position = temp_element[1].get_top() + UP * 1
                 # target_position = (DOWN * 1) + LEFT * 5
@@ -68,7 +68,24 @@ class FirstAbstractionLevel(Scene):
         def eval():
             # TODO eval stuff
 
-            num1 = int(self.currNumStack.pop()[2])
+            if not self.currNumStack:
+                # Handle the case when the list is empty
+
+                raise ValueError("currNumStack is empty")
+
+            print("NumStack before first pop:", self.currNumStack)
+
+            popped_ele = self.currNumStack.pop()
+
+            num1 = int(popped_ele[2])
+
+            print("Popped Element 1:", popped_ele)
+            print("numstack after first pop:", self.currNumStack)
+
+            if not self.currNumStack:
+                # Handle the case when the list is empty after the first pop
+                raise ValueError("currNumStack is empty after the first pop")
+
             num2 = int(self.currNumStack.pop()[2])
             ope = self.currOperatorStack.pop()[2]
             if ope == "+":
@@ -79,7 +96,7 @@ class FirstAbstractionLevel(Scene):
             return result
 
         for i in range(len(self.expression_group)):
-            next_elem = None
+            next_elem = self.expression_group[self.counter]
             if (self.counter >= len(self.expression_group)):
                 self.wait(2)
                 break
@@ -91,6 +108,7 @@ class FirstAbstractionLevel(Scene):
 
             elif (self.expression_list[self.counter] == ")"):
                 # TODO evaluation
+                eval()
                 self.counter += 1
                 continue
 

@@ -6,7 +6,7 @@ class FirstAbstractionLevel(Scene):
     def construct(self):
         self.wait(1)
         self.expression_list = [
-            "(", "3", "+", "5", "-", "(", "7", "+", "8", ")", ")"]
+            "(", "(", "3", "+", "50", "-", "(", "7", "+", "8", ")", ")", ")"]
         self.counter = 0
         self.arrow = None
         self.expression_group = create_arithmetic_expression()
@@ -17,9 +17,9 @@ class FirstAbstractionLevel(Scene):
 
         # Play the operand table and set its entries to color BLACK to show an empty table
 
-        def push_num():
+        def push_num(tex, str):
 
-            stack_element = self.expression_group[self.counter]
+            stack_element = tex
             enclosing_square = SurroundingRectangle(
                 stack_element, color=BLUE, buff=0.3)
 
@@ -33,7 +33,7 @@ class FirstAbstractionLevel(Scene):
                 # target_position = (DOWN * 1) + LEFT * 5
 
             self.currNumStack.append(
-                (stack_element, enclosing_square, self.expression_list[self.counter]))
+                (stack_element, enclosing_square, str))
 
             # Animate moving the stack_element and the square to the target position
             self.play(
@@ -93,10 +93,14 @@ class FirstAbstractionLevel(Scene):
             elif ope == "-":
                 result = num1 - num2
 
-            return result
+            result_string = str(result)
+            tex = MathTex(result_string)
+
+            return result_string, tex
 
         for i in range(len(self.expression_group)):
             next_elem = self.expression_group[self.counter]
+            next_str = self.expression_list[self.counter]
             if (self.counter >= len(self.expression_group)):
                 self.wait(2)
                 break
@@ -104,23 +108,21 @@ class FirstAbstractionLevel(Scene):
             if (self.expression_list[self.counter] == "("):
                 self.counter += 1
                 # TODO remove
-                continue
 
             elif (self.expression_list[self.counter] == ")"):
                 # TODO evaluation
-                eval()
+                result_string, tex = eval()
+                push_num(tex, result_string)
                 self.counter += 1
-                continue
 
             elif (self.expression_list[self.counter] == "+" or self.expression_list[self.counter] == "-"):
                 push_ope()
                 self.counter += 1
-                continue
 
             elif int(self.expression_list[self.counter]):
-                push_num()
+                push_num(next_elem, next_str)
                 self.counter += 1
-                continue
+
     #     self.num_table = MathTable([
     #         ["A"],
     #         ["B"],

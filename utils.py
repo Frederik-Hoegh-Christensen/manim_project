@@ -8,7 +8,8 @@ def create_arithmetic_expression(expression_list=None):
 
     expression_objects = [MathTex(e) for e in expression_list]
     expression_group = VGroup(*expression_objects).arrange(RIGHT, buff=0.1)
-    expression_group.to_edge(UP)
+    expression_group.move_to([0, config.frame_height - 4.6, 0])
+    #expression_group.to_edge(UP)
     return expression_group
 
 

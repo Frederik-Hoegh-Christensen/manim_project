@@ -4,6 +4,8 @@ from utils import *
 
 class FirstAbstractionLevel(Scene):
     def construct(self):
+        line = Line(start=[- config.frame_width , config.frame_height/3, 0], end=[config.frame_width, config.frame_height/3, 0], stroke_width=4)
+        self.add(line)
         self.wait(1)
         self.expression_list = [
             "(", "(", "3", "+", "50", ")", "-", "(", "7", "+", "8", ")", ")"]

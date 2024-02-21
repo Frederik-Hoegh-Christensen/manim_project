@@ -1,5 +1,5 @@
 from manim import *
-from expression import create_arithmetic_expression
+from utils import *
 
 
 class FirstAbstractionLevel(Scene):
@@ -20,10 +20,11 @@ class FirstAbstractionLevel(Scene):
         # Play the operand table and set its entries to color BLACK to show an empty table
 
         def push_num(tex, str):
-
-            stack_element = tex
-            enclosing_square = SurroundingRectangle(
-                stack_element, color=BLUE, buff=0.3)
+            vo = Visual_object(tex, str)
+            vo.tex = tex
+            vo.as_string = str
+            vo.square = SurroundingRectangle(
+                vo.tex, color=BLUE, buff=0.3)
 
             if self.currNumStack == []:
                 target_position = (DOWN * 2) + LEFT * 5  # Adjust as needed
@@ -31,23 +32,23 @@ class FirstAbstractionLevel(Scene):
             else:
                 temp_element = self.currNumStack[-1]
                 # TODO correct the space between stack elements
-                target_position = temp_element[1].get_top() + UP * 1
-                # target_position = (DOWN * 1) + LEFT * 5
+                target_position = temp_element.square.get_top() + UP * 1
 
             self.currNumStack.append(
-                (stack_element, enclosing_square, str))
+                vo)
 
             # Animate moving the stack_element and the square to the target position
             self.play(
-                stack_element.animate.move_to(target_position),
-                enclosing_square.animate.move_to(target_position)
+                vo.tex.animate.move_to(target_position),
+                vo.square.animate.move_to(target_position)
             )
 
         def push_ope():
-
-            stack_element = self.expression_group[self.counter]
-            enclosing_square = SurroundingRectangle(
-                stack_element, color=BLUE, buff=0.3)
+            vo = Visual_object()
+            vo.tex = self.expression_group[self.counter]
+            vo.square = SurroundingRectangle(
+                vo.tex, color=BLUE, buff=0.3)
+            vo.as_string = self.expression_list[self.counter]
 
             if self.currOperatorStack == []:
                 target_position = (DOWN * 2) + RIGHT * 5  # Adjust as needed
@@ -55,33 +56,29 @@ class FirstAbstractionLevel(Scene):
             else:
                 temp_element = self.currOperatorStack[-1]
                 # TODO correct the space between stack elements
-                target_position = temp_element[1].get_top() + UP * 1
-                # target_position = (DOWN * 1) + LEFT * 5
+                target_position = temp_element.square.get_top() + UP * 1
 
-            self.currOperatorStack.append(
-                (stack_element, enclosing_square, self.expression_list[self.counter]))
+            self.currOperatorStack.append(vo)
 
             # Animate moving the stack_element and the square to the target position
             self.play(
-                stack_element.animate.move_to(target_position),
-                enclosing_square.animate.move_to(target_position)
+                vo.tex.animate.move_to(target_position),
+                vo.square.animate.move_to(target_position)
             )
 
         def pop_num():
             popped_ele1 = self.currNumStack.pop()
-            tex1 = popped_ele1[0]
-            square1 = popped_ele1[1]
-            str1 = popped_ele1[2]
 
             if self.eval_squares == []:
                 target_position = DOWN + RIGHT * 1
             else:
-                target_position = self.eval_squares[-1].get_left() + LEFT
+                temp_element = self.eval_squares[-1]
+                target_position = temp_element.square.get_left() + LEFT
 
-            self.eval_squares.append(square1)
+            self.eval_squares.append(popped_ele1)
             self.play(
-                tex1.animate.move_to(target_position),
-                square1.animate.move_to(target_position)
+                popped_ele1.tex.animate.move_to(target_position),
+                popped_ele1.square.animate.move_to(target_position)
             )
 
             self.wait(1)
@@ -90,105 +87,57 @@ class FirstAbstractionLevel(Scene):
 
         def pop_ope():
             popped_ele1 = self.currOperatorStack.pop()
-            tex1 = popped_ele1[0]
-            square1 = popped_ele1[1]
-            str1 = popped_ele1[2]
 
             if self.eval_squares == []:
                 target_position = DOWN + RIGHT * 2
             else:
-                target_position = self.eval_squares[-1].get_left() + LEFT
+                temp_element = self.eval_squares[-1]
+                target_position = temp_element.square.get_left() + LEFT
 
-            self.eval_squares.append(square1)
+            self.eval_squares.append(popped_ele1)
             self.play(
-                tex1.animate.move_to(target_position),
-                square1.animate.move_to(target_position)
+                popped_ele1.tex.animate.move_to(target_position),
+                popped_ele1.square.animate.move_to(target_position)
             )
 
             self.wait(1)
             return popped_ele1
 
         def eval():
-            # TODO eval stuff
-            numTriple_1 = pop_num()
-            tex1 = numTriple_1[0]
-            square1 = numTriple_1[1]
-            str1 = numTriple_1[2]
 
+            vo1 = pop_num()
             ope = pop_ope()
-            tex2 = ope[0]
-            square2 = ope[1]
-            str2 = ope[2]
+            vo2 = pop_num()
 
-            numTriple_2 = pop_num()
-            tex3 = numTriple_2[0]
-            square3 = numTriple_2[1]
-            str3 = numTriple_2[2]
-
-            if str2 == "+":
-                res_string = str(int(str3) + int(str1))
-            elif str2 == "-":
-                res_string = str(int(str3) - int(str1))
-
-                # equals_tex = MathTex("=")
-                # equals = equals_tex.animate.move_to(self.eval_squares[0].get_right())
-                # self.play(FadeIn(equals))
-                # self.wait(1)
+            if ope.as_string == "+":
+                res_string = str(int(vo2.as_string) +
+                                 int(vo1.as_string))
+            elif ope.as_string == "-":
+                res_string = str(int(vo2.as_string) -
+                                 int(vo1.as_string))
 
             equals_tex = MathTex("=")
             # Move the equals_tex to the desired position
-            equals_tex.next_to(self.eval_squares[0], RIGHT)
+
+            equals_tex.next_to(self.eval_squares[0].square, RIGHT)
             # Then, play the FadeIn animation for equals_tex
             self.play(FadeIn(equals_tex))
             self.wait(1)
-
-            # res_tex = MathTex(res_string)
-            # res = res_tex.animate.move_to(equals_tex.get_right())
-            # self.play(FadeIn(res))
             res_tex = MathTex(res_string)
-            # Position res_tex next to equals_tex
+
             res_tex.next_to(equals_tex, RIGHT)
-            # Play the FadeIn animation for res_tex
+
             self.play(FadeIn(res_tex))
 
             push_num(res_tex, res_string)
+
             self.play(FadeOut(
                 equals_tex,
-                tex1, square1,
-                tex2, square2,
-                tex3, square3
+                vo1.tex, vo1.square,
+                ope.tex, ope.square,
+                vo2.tex, vo2.square
             ))
             self.eval_squares = []
-
-            # if not self.currNumStack:
-            #     # Handle the case when the list is empty
-
-            #     raise ValueError("currNumStack is empty")
-
-            # print("NumStack before first pop:", self.currNumStack)
-
-            # popped_ele = self.currNumStack.pop()
-
-            # num1 = int(popped_ele[2])
-
-            # print("Popped Element 1:", popped_ele)
-            # print("numstack after first pop:", self.currNumStack)
-
-            # if not self.currNumStack:
-            #     # Handle the case when the list is empty after the first pop
-            #     raise ValueError("currNumStack is empty after the first pop")
-
-            # num2 = int(self.currNumStack.pop()[2])
-            # ope = self.currOperatorStack.pop()[2]
-            # if ope == "+":
-            #     result = num2 + num1
-            # elif ope == "-":
-            #     result = num2 - num1
-
-            # result_string = str(result)
-            # tex = MathTex(result_string)
-
-            # return result_string, tex
 
         for i in range(len(self.expression_group)):
             next_elem = self.expression_group[self.counter]
@@ -200,15 +149,12 @@ class FirstAbstractionLevel(Scene):
             if (self.expression_list[self.counter] == "("):
                 self.play(FadeOut(self.expression_group[self.counter]))
                 self.counter += 1
-                # TODO remove
 
             elif (self.expression_list[self.counter] == ")"):
-                # TODO evaluation
+
                 self.play(FadeOut(self.expression_group[self.counter]))
                 eval()
 
-                # result_string, tex = eval()
-                # push_num(tex, result_string)
                 self.counter += 1
 
             elif (self.expression_list[self.counter] == "+" or self.expression_list[self.counter] == "-"):
@@ -218,67 +164,3 @@ class FirstAbstractionLevel(Scene):
             elif int(self.expression_list[self.counter]):
                 push_num(next_elem, next_str)
                 self.counter += 1
-
-    #     self.num_table = MathTable([
-    #         ["A"],
-    #         ["B"],
-    #         ["C"],
-    #         ["D"]], include_outer_lines=True).to_edge(LEFT)
-    #     self.num_table.get_entries((1,1)).set_color(BLACK)
-    #     self.num_table.get_entries((2,1)).set_color(BLACK)
-    #     self.num_table.get_entries((3,1)).set_color(BLACK)
-    #     self.num_table.get_entries((4,1)).set_color(BLACK)
-    #     self.play(Create(self.num_table))
-
-    #     # Loop Through all the elements in the expression
-    #     for i in range(4):
-    #         original = self.get_next_list_elem()
-
-    #         if (self.expression_list[self.counter] == "("):
-    #             self.counter += 1
-    #             continue
-    #         elif (self.expression_list[self.counter] == ")"):
-    #             #TODO evaluation
-    #             self.counter += 1
-    #             continue
-    #         elif (self.expression_list[self.counter] == "+" or self.expression_list[self.counter] == "-"):
-    #             self.counter += 1
-    #             continue
-
-    #         elif int(self.expression_list[self.counter]):
-    #             next_num = original.copy().move_to(self.num_table.get_entries((self.counter,1)).get_center()).set_opacity(1)
-    #             self.play(ReplacementTransform(self.num_table.get_entries((self.counter,1)), next_num))
-    #             self.operator_table = None
-    #             self.counter += 1
-    #             self.wait(2)
-
-    # def get_next_list_elem(self):
-    #     if self.counter < len(self.expression_group):
-    #         next_elem = self.expression_group[self.counter]
-    #         # Fade the element by reducing its opacity
-    #         if self.arrow:
-    #             # Move the existing arrow
-    #             new_arrow = Arrow(
-    #                                 next_elem.get_bottom() + DOWN * 1,  # Start point
-    #                                 next_elem.get_bottom(),               # End point
-    #                                 buff=0.1,                             # Buffer space between arrow tip and target
-    #                                 max_tip_length_to_length_ratio=0.5,
-    #                                 max_stroke_width_to_length_ratio=20,                      # Directly setting the tip length
-    #                             ).set_color(BLUE)
-    #             self.play(Transform(self.arrow, new_arrow))
-    #         else:
-    #             # Create a new arrow if it doesn't exist
-    #             self.arrow = Arrow(
-    #                                 next_elem.get_bottom() + DOWN * 1,  # Start point
-    #                                 next_elem.get_bottom(),               # End point
-    #                                 buff=0.1,                             # Buffer space between arrow tip and target
-    #                                 max_tip_length_to_length_ratio=0.5,
-    #                                 max_stroke_width_to_length_ratio=20,
-
-    #                             ).set_color(BLUE)
-    #             self.play(GrowArrow(self.arrow))
-    #         self.play(next_elem.animate.set_opacity(0.2))
-    #         # Increment the counter to move to the next element in future calls
-    #         return next_elem
-    #     else:
-    #         print("No more elements to fade.")

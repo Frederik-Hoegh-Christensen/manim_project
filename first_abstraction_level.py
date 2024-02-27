@@ -9,7 +9,7 @@ class FirstAbstractionLevel(Scene):
         self.add(line)
         self.wait(1)
         self.expression_list = [
-            "(", "(", "3", "+", "50", ")", "-", "(", "7", "+", "8", ")", ")", "+"
+            "(", "(", "3", "+", "50", ")", "-", "(", "7", "+", "8", ")", ")", "+",
             # "(", "(", "3", "+", "50", ")", "-", "(", "7", "+", "8", ")", ")", "+",
             # "(", "(", "3", "+", "50", ")", "-", "(", "7", "+", "8", ")", ")", "+",
             # "(", "(", "3", "+", "50", ")", "-", "(", "7", "+", "8", ")", ")", "+",
@@ -17,7 +17,7 @@ class FirstAbstractionLevel(Scene):
             # "(", "(", "3", "+", "50", ")", "-", "(", "7", "+", "8", ")", ")", "+",
             # "(", "(", "3", "+", "50", ")", "-", "(", "7", "+", "8", ")", ")", "+",
             # "(", "(", "3", "+", "50", ")", "-", "(", "7", "+", "8", ")", ")"
-            ]
+        ]
         self.counter = 0
         self.arrow = None
         self.expression_group = create_arithmetic_expression(
@@ -25,22 +25,28 @@ class FirstAbstractionLevel(Scene):
         self.expression_group.scale(0.1)
         self.add(self.expression_group)
         self.wait(1)
-        #self.play(Write(self.expression_group))
-        #self.wait(1)
+        # self.play(Write(self.expression_group))
+        # self.wait(1)
         expression_target_pos_1 = (self.expression_group.get_width() / 2) * 8
-        
-        self.play(self.expression_group.animate.scale(8).shift(LEFT * expression_target_pos_1))
+
+        self.play(self.expression_group.animate.scale(
+            8).shift(LEFT * expression_target_pos_1))
         expression_target_pos_2 = self.expression_group.get_width()
         self.wait(1)
-        self.play(self.expression_group.animate.shift(RIGHT * expression_target_pos_2))
-        self.wait(5)
-        
+        self.play(self.expression_group.animate.shift(
+            RIGHT * expression_target_pos_2))
+        self.wait(2)
+
         operand_stack = Text('Operandstack', font_size=24)
         operand_stack.move_to(2 * UP + 5 * LEFT)
         operator_stack = Text('Operatorstack', font_size=24)
         operator_stack.move_to(2 * UP + 5 * RIGHT)
         self.play(Write(operand_stack))
         self.play(Write(operator_stack))
+        arrow_end = self.expression_group.get_left()
+        arrow_start = arrow_end + LEFT
+        arrow = Arrow(start=arrow_start, end=arrow_end, buff=0.2)
+        self.play(FadeIn(arrow))
 
         self.currNumStack = []
         self.currOperatorStack = []
@@ -169,12 +175,13 @@ class FirstAbstractionLevel(Scene):
             self.eval_squares = []
 
         def shift_expression_left():
-            
-            move_left_range = self.expression_group[0].get_width()
-            self.expression_group.shift(LEFT * move_left_range)
+
+            move_left_range = self.expression_group[0].get_left()
+            shift_vector = arrow_end - move_left_range
+            self.expression_group.shift(shift_vector)
 
         for i in range(len(self.expression_list)):
-            
+
             next_elem = self.expression_group[0]
             next_str = self.expression_list[self.counter]
             # if (self.counter >= len(self.expression_group)):
@@ -207,5 +214,3 @@ class FirstAbstractionLevel(Scene):
                 self.wait(2)
                 break
             shift_expression_left()
-
-            

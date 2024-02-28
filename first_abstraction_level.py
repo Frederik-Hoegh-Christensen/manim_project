@@ -24,18 +24,17 @@ class FirstAbstractionLevel(Scene):
             self.expression_list)
         self.expression_group.scale(0.1)
         self.add(self.expression_group)
-        self.wait(1)
-        # self.play(Write(self.expression_group))
-        # self.wait(1)
+        self.wait(0.5)
+
         expression_target_pos_1 = (self.expression_group.get_width() / 2) * 8
 
         self.play(self.expression_group.animate.scale(
             8).shift(LEFT * expression_target_pos_1))
         expression_target_pos_2 = self.expression_group.get_width()
-        self.wait(1)
+        self.wait(0.5)
         self.play(self.expression_group.animate.shift(
             RIGHT * expression_target_pos_2))
-        self.wait(2)
+        self.wait(0.5)
 
         operand_stack = Text('Operandstack', font_size=24)
         operand_stack.move_to(2 * UP + 5 * LEFT)
@@ -71,12 +70,14 @@ class FirstAbstractionLevel(Scene):
 
             self.currNumStack.append(
                 vo)
-
+            # Remove the original element from the expression, before moving the copy
+            
             # Animate moving the stack_element and the square to the target position
             self.play(
                 vo.tex.animate.move_to(target_position),
                 vo.square.animate.move_to(target_position)
             )
+            self.wait(0.5)
 
         def push_ope():
             vo = Visual_object()
@@ -94,12 +95,15 @@ class FirstAbstractionLevel(Scene):
                 target_position = temp_element.square.get_top() + UP * 1
 
             self.currOperatorStack.append(vo)
-
+            # Remove the original element from the expression, before moving the copy
+            
             # Animate moving the stack_element and the square to the target position
+            self.expression_group.remove(self.expression_group[0])
             self.play(
                 vo.tex.animate.move_to(target_position),
                 vo.square.animate.move_to(target_position)
             )
+            self.wait(0.5)
 
         def pop_num():
             popped_ele1 = self.currNumStack.pop()
@@ -112,11 +116,11 @@ class FirstAbstractionLevel(Scene):
 
             self.eval_squares.append(popped_ele1)
             self.play(
-                popped_ele1.tex.animate.move_to(target_position),
-                popped_ele1.square.animate.move_to(target_position)
+                popped_ele1.square.animate.move_to(target_position),
+                popped_ele1.tex.animate.move_to(target_position)
             )
 
-            self.wait(1)
+            self.wait(0.5)
 
             return popped_ele1
 
@@ -135,7 +139,7 @@ class FirstAbstractionLevel(Scene):
                 popped_ele1.square.animate.move_to(target_position)
             )
 
-            self.wait(1)
+            self.wait(0.5)
             return popped_ele1
 
         def eval():
@@ -157,7 +161,7 @@ class FirstAbstractionLevel(Scene):
             equals_tex.next_to(self.eval_squares[0].square, RIGHT)
             # Then, play the FadeIn animation for equals_tex
             self.play(FadeIn(equals_tex))
-            self.wait(1)
+            self.wait(0.5)
             res_tex = MathTex(res_string)
 
             res_tex.next_to(equals_tex, RIGHT)
@@ -173,20 +177,20 @@ class FirstAbstractionLevel(Scene):
                 vo2.tex, vo2.square
             ))
             self.eval_squares = []
+            
 
         def shift_expression_left():
 
             move_left_range = self.expression_group[0].get_left()
             shift_vector = arrow_end - move_left_range
-            self.expression_group.shift(shift_vector)
+            self.play(self.expression_group.animate.shift(shift_vector))
+            self.wait(0.5)
 
         for i in range(len(self.expression_list)):
-
-            next_elem = self.expression_group[0]
+            
+            next_elem = self.expression_group[0].copy()
             next_str = self.expression_list[self.counter]
-            # if (self.counter >= len(self.expression_group)):
-            #     self.wait(2)
-            #     break
+            
 
             if (self.expression_list[self.counter] == "("):
                 self.play(FadeOut(self.expression_group[0]))
@@ -202,15 +206,15 @@ class FirstAbstractionLevel(Scene):
 
             elif (self.expression_list[self.counter] == "+" or self.expression_list[self.counter] == "-"):
                 push_ope()
-                self.expression_group.remove(self.expression_group[0])
                 self.counter += 1
 
             elif int(self.expression_list[self.counter]):
-                push_num(next_elem, next_str)
                 self.expression_group.remove(self.expression_group[0])
+                push_num(next_elem, next_str)
+                # self.expression_group.remove(self.expression_group[0])
                 self.counter += 1
 
             if (len(self.expression_group) == 0):
-                self.wait(2)
+                self.wait(1)
                 break
             shift_expression_left()

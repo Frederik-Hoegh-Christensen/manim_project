@@ -38,19 +38,21 @@ class FirstAbstractionLevel(Scene):
             RIGHT * expression_target_pos_2))
         self.wait(0.5)
 
-        # operand_stack = Text('Operandstack', font_size=24)
-        # operand_stack.move_to(2 * UP + 5 * LEFT)
-        # operator_stack = Text('Operatorstack', font_size=24)
-        # operator_stack.move_to(2 * UP + 5 * RIGHT)
-        # self.play(Write(operand_stack))
-        # self.play(Write(operator_stack))
+        operand_stack = Text('Operandstack', font_size=24)
+        operand_stack.move_to(2 * UP + 5 * LEFT)
+        operator_stack = Text('Operatorstack', font_size=24)
+        operator_stack.move_to(2 * UP + 5 * RIGHT)
+        self.play(Write(operand_stack))
+        self.play(Write(operator_stack))
         arrow_end = self.expression_group.get_left()
         arrow_start = arrow_end + LEFT
         arrow = Arrow(start=arrow_start, end=arrow_end, buff=0.2)
-        # self.play(FadeIn(arrow))
+        self.play(FadeIn(arrow))
 
         self.currNumStack = []
-        self.testStack = VGroup()
+        self.num_stack = VGroup()
+        self.ope_stack = VGroup()
+
         self.currOperatorStack = []
         self.eval_squares = []
 
@@ -62,88 +64,88 @@ class FirstAbstractionLevel(Scene):
                 vo.tex, color=BLUE, buff=0.3)
             vo.square.stretch_to_fit_width(0.7)
             
-            # if self.testStack.submobjects == []:
-            #     # (DOWN * 2) + LEFT * 5  # Adjust as needed
-            #     target_position = corner
+            self.num_stack.add(VGroup(vo.tex, vo.square))
 
-            # else:
-            #     temp_element = self.testStack.submobjects[-1]
-
-            #     # TODO correct the space between stack elements
-            #     target_position = temp_element.get_top() + UP * 1
-            # if self.currNumStack == []:
-            #     target_position = (DOWN * 2) + LEFT * 5  # Adjust as needed
-
-            # else:
-            #     temp_element = self.currNumStack[-1]
-
-            #     # TODO correct the space between stack elements
-            #     target_position = temp_element.square.get_top() + UP * 1
-
-            # self.currNumStack.append(
-            #     vo)
-
-            # vo_copy = copy.deepcopy(self.currNumStack[-1])
-
-            # print("kopien", vo_copy.tex)
-
-            # self.testStack.add(VGroup(vo_copy.tex, vo_copy.square))
-
-            # Remove the original element from the expression, before moving the copy
-            # Animate moving the stack_element and the square to the target position
-            self.testStack.add(VGroup(vo.tex, vo.square))
-
-            print("Test stak", self.testStack)
-            target_position = self.testStack[-1].get_top()
-            item_to_move = self.testStack[-1]
-            if len(self.testStack) == 1:
+            target_position = self.num_stack[-1].get_top()
+            item_to_move = self.num_stack[-1]
+            if len(self.num_stack) == 1:
 
                 self.play(
                     item_to_move.animate.to_corner(DL + (UP * 0.5))
-                    # vo.tex.animate.move_to(target_position),
-                    # vo.square.animate.move_to(target_position),
+                    ,
                 )
-            # self.wait(1)
+            
             else:
-                target_position1 = self.testStack[-2].get_top()
-                target_position = self.testStack[-2].get_top() + UP * (item_to_move.height / 2 )
+                # Position at top of the stack
+                target_position = self.num_stack[-2].get_top() + UP * (item_to_move.height / 2 )
 
                 self.play(
                     item_to_move.animate.move_to(target_position)
 
                 )
 
-            self.testStack.arrange(
+            self.num_stack.arrange(
                 buff=0,
                 direction=UP).to_corner(DL + (UP * 0.5))
-            # self.add(self.testStack)
+            
 
         def push_ope():
             vo = Visual_object()
             vo.tex = self.expression_group[0]
             vo.square = SurroundingRectangle(
                 vo.tex, color=BLUE, buff=0.3)
+            vo.square.stretch_to_fit_width(0.7)
+            
+            self.ope_stack.add(VGroup(vo.tex, vo.square))
 
-            if self.currOperatorStack == []:
-                target_position = (DOWN * 2) + RIGHT * 5  # Adjust as needed
+            target_position = self.ope_stack[-1].get_top()
+            item_to_move = self.ope_stack[-1]
+            if len(self.ope_stack) == 1:
 
+                self.play(
+                    item_to_move.animate.to_corner(DR + (UP * 0.5))
+                )
+            
             else:
-                temp_element = self.currOperatorStack[-1]
-                # TODO correct the space between stack elements
-                target_position = temp_element.square.get_top() + UP * 1
+                # Position at top of the stack
+                target_position = self.ope_stack[-2].get_top() + UP * (item_to_move.height / 2 )
 
-            self.currOperatorStack.append(vo)
-            # Remove the original element from the expression, before moving the copy
+                self.play(
+                    item_to_move.animate.move_to(target_position)
 
-            # Animate moving the stack_element and the square to the target position
-            self.expression_group.remove(self.expression_group[0])
-            self.play(
-                vo.tex.animate.move_to(target_position),
-                vo.square.animate.move_to(target_position)
-            )
-            self.wait(0.5)
+                )
+
+            self.ope_stack.arrange(
+                buff=0,
+                direction=UP).to_corner(DR + (UP * 0.5))
+            
+            ###############################################################
+            # vo = Visual_object()
+            # vo.tex = self.expression_group[0]
+            # vo.square = SurroundingRectangle(
+            #     vo.tex, color=BLUE, buff=0.3)
+
+            # if self.currOperatorStack == []:
+            #     target_position = (DOWN * 2) + RIGHT * 5  # Adjust as needed
+
+            # else:
+            #     temp_element = self.currOperatorStack[-1]
+            #     # TODO correct the space between stack elements
+            #     target_position = temp_element.square.get_top() + UP * 1
+
+            # self.currOperatorStack.append(vo)
+            # # Remove the original element from the expression, before moving the copy
+
+            # # Animate moving the stack_element and the square to the target position
+            # self.expression_group.remove(self.expression_group[0])
+            # self.play(
+            #     vo.tex.animate.move_to(target_position),
+            #     vo.square.animate.move_to(target_position)
+            # )
+            # self.wait(0.5)
 
         def pop_num():
+            num1_vo = self.num_stack[0]
             popped_ele1 = self.currNumStack.pop()
 
             if self.eval_squares == []:
@@ -227,7 +229,6 @@ class FirstAbstractionLevel(Scene):
         for i in range(len(self.expression_list)):
 
             next_elem = self.expression_group[0].copy()
-            next_str = self.expression_list[self.counter]
 
             if (self.expression_list[self.counter] == "("):
                 self.play(FadeOut(self.expression_group[0]))
@@ -243,12 +244,13 @@ class FirstAbstractionLevel(Scene):
 
             elif (self.expression_list[self.counter] == "+" or self.expression_list[self.counter] == "-"):
                 push_ope()
+                self.expression_group.remove(self.expression_group[0])
                 self.counter += 1
 
             elif int(self.expression_list[self.counter]):
                 self.expression_group.remove(self.expression_group[0])
                 push_num(next_elem)
-                # self.expression_group.remove(self.expression_group[0])
+               
                 self.counter += 1
 
             if (len(self.expression_group) == 0):

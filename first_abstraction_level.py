@@ -10,7 +10,7 @@ class FirstAbstractionLevel(Scene):
         self.add(line)
         self.wait(1)
         self.expression_list = [
-            "(", "1", "+", "5", ")"
+            "(", "100", "+", "5", ")"
             # "(", "(", "3", "+", "50", ")", "-", "(", "7", "+", "8", ")", ")", "+",
             # "(", "(", "3", "+", "50", ")", "-", "(", "7", "+", "8", ")", ")", "+",
             # "(", "(", "3", "+", "50", ")", "-", "(", "7", "+", "8", ")", ")", "+",
@@ -60,7 +60,8 @@ class FirstAbstractionLevel(Scene):
             vo = Visual_object(tex=tex)
             vo.square = SurroundingRectangle(
                 vo.tex, color=BLUE, buff=0.3)
-
+            vo.square.stretch_to_fit_width(0.7)
+            
             # if self.testStack.submobjects == []:
             #     # (DOWN * 2) + LEFT * 5  # Adjust as needed
             #     target_position = corner

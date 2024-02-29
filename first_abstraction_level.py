@@ -56,48 +56,63 @@ class FirstAbstractionLevel(Scene):
 
         # Play the operand table and set its entries to color BLACK to show an empty table
 
-        def push_num(tex, str):
-            vo = Visual_object(tex=tex, as_string=str)
+        def push_num(tex):
+            vo = Visual_object(tex=tex)
             vo.square = SurroundingRectangle(
                 vo.tex, color=BLUE, buff=0.3)
+            
 
-            if self.currNumStack == []:
-                target_position = (DOWN * 2) + LEFT * 5  # Adjust as needed
+            if self.testStack.submobjects == []:
+                target_position = DOWN * 2 #(DOWN * 2) + LEFT * 5  # Adjust as needed
 
             else:
-                temp_element = self.currNumStack[-1]
+                temp_element = self.testStack.submobjects[-1]
 
                 # TODO correct the space between stack elements
-                target_position = temp_element.square.get_top() + UP * 1
+                target_position = temp_element.get_top() + UP * 1
+            # if self.currNumStack == []:
+            #     target_position = (DOWN * 2) + LEFT * 5  # Adjust as needed
 
-            self.currNumStack.append(
-                vo)
+            # else:
+            #     temp_element = self.currNumStack[-1]
 
-            vo_copy = copy.deepcopy(self.currNumStack[-1])
+            #     # TODO correct the space between stack elements
+            #     target_position = temp_element.square.get_top() + UP * 1
 
-            print("kopien", vo_copy.tex)
+            # self.currNumStack.append(
+            #     vo)
+            
+            
 
-            self.testStack.add(vo_copy.as_string)
+            #vo_copy = copy.deepcopy(self.currNumStack[-1])
 
-            self.testStack.arrange(
-                UP, buff=0.1).to_edge(DOWN)
+            #print("kopien", vo_copy.tex)
 
-            self.add(self.testStack)
+            #self.testStack.add(VGroup(vo_copy.tex, vo_copy.square))
+            
+
+            
 
             # Remove the original element from the expression, before moving the copy
-
+            self.testStack.add(VGroup(vo.tex, vo.square))
             # Animate moving the stack_element and the square to the target position
             print("Test stak", self.testStack)
+            item_to_move = self.testStack[-1]
             self.play(
-                vo.tex.animate.move_to(target_position),
-                vo.square.animate.move_to(target_position),
+                item_to_move.animate.move_to(target_position)
+                # vo.tex.animate.move_to(target_position),
+                # vo.square.animate.move_to(target_position),
 
 
             )
-            self.wait(0.5)
+            self.wait(1)
+            
+            self.testStack.arrange(
+                UP, buff=0.1).to_edge(DOWN)
+            #self.add(self.testStack)
 
         def push_ope():
-            vo = Visual_object(as_string=self.expression_list[self.counter])
+            vo = Visual_object()
             vo.tex = self.expression_group[0]
             vo.square = SurroundingRectangle(
                 vo.tex, color=BLUE, buff=0.3)
@@ -164,12 +179,12 @@ class FirstAbstractionLevel(Scene):
             ope = pop_ope()
             vo2 = pop_num()
             res_string = ""
-            if ope.as_string == "+":
-                res_string = str(int(vo2.as_string) +
-                                 int(vo1.as_string))
-            elif ope.as_string == "-":
-                res_string = str(int(vo2.as_string) -
-                                 int(vo1.as_string))
+            if ope.tex.get_tex_string() == "+":
+                res_string = str(int(vo2.tex.get_tex_string()) +
+                                 int(vo1.tex.get_tex_string()))
+            elif ope.tex.get_tex_string() == "-":
+                res_string = str(int(vo2.tex.get_tex_string()) -
+                                 int(vo1.tex.get_tex_string()))
 
             equals_tex = MathTex("=")
 
@@ -182,10 +197,10 @@ class FirstAbstractionLevel(Scene):
             res_tex = MathTex(res_string)
 
             res_tex.next_to(equals_tex, RIGHT)
-
+            
             self.play(FadeIn(res_tex))
 
-            push_num(res_tex, res_string)
+            push_num(res_tex)
 
             self.play(FadeOut(
                 equals_tex,
@@ -215,7 +230,7 @@ class FirstAbstractionLevel(Scene):
             elif (self.expression_list[self.counter] == ")"):
 
                 self.play(FadeOut(self.expression_group[0]))
-                eval()
+                #eval()
                 self.expression_group.remove(self.expression_group[0])
                 self.counter += 1
 
@@ -225,7 +240,7 @@ class FirstAbstractionLevel(Scene):
 
             elif int(self.expression_list[self.counter]):
                 self.expression_group.remove(self.expression_group[0])
-                push_num(next_elem, next_str)
+                push_num(next_elem)
                 # self.expression_group.remove(self.expression_group[0])
                 self.counter += 1
 

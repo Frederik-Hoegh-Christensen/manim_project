@@ -13,8 +13,9 @@ def create_arithmetic_expression(expression_list=None):
     return expression_group
 
 
-class Visual_object:
+class Visual_object():
     def __init__(self, tex: MathTex = None, square: SurroundingRectangle = None, as_string: str = None) -> None:
         self.tex = tex
         self.square = square
-        self.as_string = as_string
+        self.as_string = Text(as_string)
+        # self.submobjects = [tex, square]

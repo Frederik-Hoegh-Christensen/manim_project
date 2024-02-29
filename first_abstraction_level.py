@@ -104,7 +104,8 @@ class FirstAbstractionLevel(Scene):
                 )
             # self.wait(1)
             else:
-                target_position = self.testStack[-2].get_top()
+                target_position1 = self.testStack[-2].get_top()
+                target_position = self.testStack[-2].get_top() + UP * (item_to_move.height / 2 )
 
                 self.play(
                     item_to_move.animate.move_to(target_position)
@@ -112,7 +113,8 @@ class FirstAbstractionLevel(Scene):
                 )
 
             self.testStack.arrange(
-                UP).to_corner(DL + (UP * 0.5))
+                buff=0,
+                direction=UP).to_corner(DL + (UP * 0.5))
             # self.add(self.testStack)
 
         def push_ope():

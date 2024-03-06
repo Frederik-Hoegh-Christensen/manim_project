@@ -13,13 +13,20 @@ def create_arithmetic_expression(expression_list=None):
     return expression_group
 
 
-
-
 class Visual_object():
     def __init__(self, tex: MathTex = None, square: SurroundingRectangle = None) -> None:
         self.tex = tex
         self.square = square
-        #self.as_string = MathTex(as_string)
+        # self.as_string = MathTex(as_string)
         # self.submobjects = [tex, square]
 
 
+def create_placeholders(n: int):
+    res = []
+    if n < 1:
+        return res
+
+    for i in range(n):
+        e = Text("_").set_color(BLACK)
+        res.append(e)
+    return res

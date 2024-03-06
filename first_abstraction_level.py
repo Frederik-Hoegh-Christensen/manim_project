@@ -51,9 +51,15 @@ class FirstAbstractionLevel(Scene):
 
         self.currNumStack = []
 
-        #ACTUAL STACKS 
+        # self.add(self.num_array)
+
+        # ACTUAL STACKS
         self.num_stack = VGroup()
         self.ope_stack = VGroup()
+        # Array
+        self.num_array = None
+
+        self.num_arr_size = 2
 
         self.currOperatorStack = []
         self.eval_squares = []
@@ -62,24 +68,50 @@ class FirstAbstractionLevel(Scene):
 
         def push_num(tex):
             vo = Visual_object(tex=tex)
-            #vo.tex.font_size = 38.4
+            # vo.tex.font_size = 38.4
             vo.square = SurroundingRectangle(
                 vo.tex, color=BLUE, buff=0.3)
             vo.square.stretch_to_fit_width(0.7)
-            
+
             self.num_stack.add(VGroup(vo.tex, vo.square))
+            num_array_eles = [e[0].copy() for e in self.num_stack]
+
+            if (self.num_array):
+                self.remove(self.num_array)
+
+            # len_num_array = len(num_array_eles)
+            black_placeholder = None
+            if (len(num_array_eles) == self.num_arr_size):
+                self.num_arr_size = self.num_arr_size * 2
+                black_placeholder = create_placeholders(self.num_arr_size)
+
+            black_len = self.num_arr_size - len(num_array_eles)
+
+            placeholder = create_placeholders(black_len)
+
+            result = num_array_eles + placeholder
+
+            self.num_array = MobjectTable(
+                [result], include_outer_lines=True).scale(0.5).to_edge(DOWN)
+            self.add(self.num_array)
+
+            if (black_placeholder):
+                self.temp_array = MobjectTable(
+                    [black_placeholder], include_outer_lines=True).scale(0.5).next_to(self.num_array, direction=DOWN)
+                self.add(self.temp_array)
+
             target_position = self.num_stack[-1].get_top()
             item_to_move = self.num_stack[-1]
             if len(self.num_stack) == 1:
 
                 self.play(
-                    item_to_move.animate.to_corner(DL + (UP * 0.5))
-                    ,
+                    item_to_move.animate.to_corner(DL + (UP * 0.5)),
                 )
-            
+
             else:
                 # Position at top of the stack
-                target_position = self.num_stack[-2].get_top() + UP * (item_to_move.height / 2 )
+                target_position = self.num_stack[-2].get_top() + \
+                    UP * (item_to_move.height / 2)
 
                 self.play(
                     item_to_move.animate.move_to(target_position)
@@ -89,7 +121,6 @@ class FirstAbstractionLevel(Scene):
             self.num_stack.arrange(
                 buff=0,
                 direction=UP).to_corner(DL + (UP * 0.5))
-            
 
         def push_ope():
             vo = Visual_object()
@@ -97,7 +128,7 @@ class FirstAbstractionLevel(Scene):
             vo.square = SurroundingRectangle(
                 vo.tex, color=BLUE, buff=0.3)
             vo.square.stretch_to_fit_width(0.7)
-            
+
             self.ope_stack.add(VGroup(vo.tex, vo.square))
 
             target_position = self.ope_stack[-1].get_top()
@@ -107,10 +138,11 @@ class FirstAbstractionLevel(Scene):
                 self.play(
                     item_to_move.animate.to_corner(DR + (UP * 0.5))
                 )
-            
+
             else:
                 # Position at top of the stack
-                target_position = self.ope_stack[-2].get_top() + UP * (item_to_move.height / 2 )
+                target_position = self.ope_stack[-2].get_top() + \
+                    UP * (item_to_move.height / 2)
 
                 self.play(
                     item_to_move.animate.move_to(target_position)
@@ -120,7 +152,7 @@ class FirstAbstractionLevel(Scene):
             self.ope_stack.arrange(
                 buff=0,
                 direction=UP).to_corner(DR + (UP * 0.5))
-            
+
             ###############################################################
             # vo = Visual_object()
             # vo.tex = self.expression_group[0]
@@ -152,8 +184,7 @@ class FirstAbstractionLevel(Scene):
             self.remove(original)
             self.num_stack.remove(original)
 
-
-            #popped_ele1 = self.currNumStack.pop()
+            # popped_ele1 = self.currNumStack.pop()
 
             if self.eval_squares == []:
                 target_position = DOWN + RIGHT * 1
@@ -164,7 +195,7 @@ class FirstAbstractionLevel(Scene):
             self.eval_squares.append(popped_ele1)
             self.play(
                 popped_ele1.animate.move_to(target_position)
-                #popped_ele1.tex.animate.move_to(target_position)
+                # popped_ele1.tex.animate.move_to(target_position)
             )
 
             self.wait(0.5)
@@ -172,12 +203,11 @@ class FirstAbstractionLevel(Scene):
             return popped_ele1
 
         def pop_ope():
-            #popped_ele1 = self.currOperatorStack.pop()
+            # popped_ele1 = self.currOperatorStack.pop()
             original = self.ope_stack[-1]
             popped_ele1 = copy.deepcopy(original)
             self.remove(original)
             self.ope_stack.remove(original)
-            
 
             if self.eval_squares == []:
                 target_position = DOWN + RIGHT * 2
@@ -188,7 +218,7 @@ class FirstAbstractionLevel(Scene):
             self.eval_squares.append(popped_ele1)
             self.play(
                 popped_ele1.animate.move_to(target_position),
-                #popped_ele1.square.animate.move_to(target_position)
+                # popped_ele1.square.animate.move_to(target_position)
             )
 
             self.wait(0.5)
@@ -225,9 +255,9 @@ class FirstAbstractionLevel(Scene):
 
             self.play(FadeOut(
                 equals_tex,
-                vo1,#.tex, vo1.square,
-                ope,#.tex, ope.square,
-                vo2#.tex, vo2.square
+                vo1,  # .tex, vo1.square,
+                ope,  # .tex, ope.square,
+                vo2  # .tex, vo2.square
             ))
             self.eval_squares = []
 
@@ -262,7 +292,7 @@ class FirstAbstractionLevel(Scene):
             elif int(self.expression_list[self.counter]):
                 self.expression_group.remove(self.expression_group[0])
                 push_num(next_elem)
-               
+
                 self.counter += 1
 
             if (len(self.expression_group) == 0):

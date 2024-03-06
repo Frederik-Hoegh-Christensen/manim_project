@@ -50,6 +50,8 @@ class FirstAbstractionLevel(Scene):
         self.play(FadeIn(arrow))
 
         self.currNumStack = []
+
+        #ACTUAL STACKS 
         self.num_stack = VGroup()
         self.ope_stack = VGroup()
 
@@ -60,12 +62,12 @@ class FirstAbstractionLevel(Scene):
 
         def push_num(tex):
             vo = Visual_object(tex=tex)
+            #vo.tex.font_size = 38.4
             vo.square = SurroundingRectangle(
                 vo.tex, color=BLUE, buff=0.3)
             vo.square.stretch_to_fit_width(0.7)
             
             self.num_stack.add(VGroup(vo.tex, vo.square))
-
             target_position = self.num_stack[-1].get_top()
             item_to_move = self.num_stack[-1]
             if len(self.num_stack) == 1:
@@ -145,19 +147,24 @@ class FirstAbstractionLevel(Scene):
             # self.wait(0.5)
 
         def pop_num():
-            num1_vo = self.num_stack[0]
-            popped_ele1 = self.currNumStack.pop()
+            original = self.num_stack[-1]
+            popped_ele1 = copy.deepcopy(self.num_stack[-1])
+            self.remove(original)
+            self.num_stack.remove(original)
+
+
+            #popped_ele1 = self.currNumStack.pop()
 
             if self.eval_squares == []:
                 target_position = DOWN + RIGHT * 1
             else:
                 temp_element = self.eval_squares[-1]
-                target_position = temp_element.square.get_left() + LEFT
+                target_position = temp_element.get_left() + LEFT
 
             self.eval_squares.append(popped_ele1)
             self.play(
-                popped_ele1.square.animate.move_to(target_position),
-                popped_ele1.tex.animate.move_to(target_position)
+                popped_ele1.animate.move_to(target_position)
+                #popped_ele1.tex.animate.move_to(target_position)
             )
 
             self.wait(0.5)
@@ -165,18 +172,23 @@ class FirstAbstractionLevel(Scene):
             return popped_ele1
 
         def pop_ope():
-            popped_ele1 = self.currOperatorStack.pop()
+            #popped_ele1 = self.currOperatorStack.pop()
+            original = self.ope_stack[-1]
+            popped_ele1 = copy.deepcopy(original)
+            self.remove(original)
+            self.ope_stack.remove(original)
+            
 
             if self.eval_squares == []:
                 target_position = DOWN + RIGHT * 2
             else:
                 temp_element = self.eval_squares[-1]
-                target_position = temp_element.square.get_left() + LEFT
+                target_position = temp_element.get_left() + LEFT
 
             self.eval_squares.append(popped_ele1)
             self.play(
-                popped_ele1.tex.animate.move_to(target_position),
-                popped_ele1.square.animate.move_to(target_position)
+                popped_ele1.animate.move_to(target_position),
+                #popped_ele1.square.animate.move_to(target_position)
             )
 
             self.wait(0.5)
@@ -188,34 +200,34 @@ class FirstAbstractionLevel(Scene):
             ope = pop_ope()
             vo2 = pop_num()
             res_string = ""
-            if ope.tex.get_tex_string() == "+":
-                res_string = str(int(vo2.tex.get_tex_string()) +
-                                 int(vo1.tex.get_tex_string()))
-            elif ope.tex.get_tex_string() == "-":
-                res_string = str(int(vo2.tex.get_tex_string()) -
-                                 int(vo1.tex.get_tex_string()))
+            if ope[0].get_tex_string() == "+":
+                res_string = str(int(vo2[0].get_tex_string()) +
+                                 int(vo1[0].get_tex_string()))
+            elif ope[0].get_tex_string() == "-":
+                res_string = str(int(vo2[0].get_tex_string()) -
+                                 int(vo1[0].get_tex_string()))
 
             equals_tex = MathTex("=")
 
             # Move the equals_tex to the desired position
 
-            equals_tex.next_to(self.eval_squares[0].square, RIGHT)
+            equals_tex.next_to(self.eval_squares[0], RIGHT)
             # Then, play the FadeIn animation for equals_tex
             self.play(FadeIn(equals_tex))
             self.wait(0.5)
             res_tex = MathTex(res_string)
 
             res_tex.next_to(equals_tex, RIGHT)
-
+            res_tex.font_size = 38.4
             self.play(FadeIn(res_tex))
 
             push_num(res_tex)
 
             self.play(FadeOut(
                 equals_tex,
-                vo1.tex, vo1.square,
-                ope.tex, ope.square,
-                vo2.tex, vo2.square
+                vo1,#.tex, vo1.square,
+                ope,#.tex, ope.square,
+                vo2#.tex, vo2.square
             ))
             self.eval_squares = []
 
@@ -238,7 +250,7 @@ class FirstAbstractionLevel(Scene):
             elif (self.expression_list[self.counter] == ")"):
 
                 self.play(FadeOut(self.expression_group[0]))
-                # eval()
+                eval()
                 self.expression_group.remove(self.expression_group[0])
                 self.counter += 1
 

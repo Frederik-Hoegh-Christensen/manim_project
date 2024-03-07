@@ -5,12 +5,13 @@ import copy
 
 class FirstAbstractionLevel(Scene):
     def construct(self):
+        my_point = LEFT * 2
         line = Line(start=[- config.frame_width, config.frame_height/3, 0],
                     end=[config.frame_width, config.frame_height/3, 0], stroke_width=4)
         self.add(line)
         self.wait(1)
         self.expression_list = [
-            "(", "100", "+", "5", ")"
+            "(", "10", "+", "5", ")"
             # "(", "(", "3", "+", "50", ")", "-", "(", "7", "+", "8", ")", ")", "+",
             # "(", "(", "3", "+", "50", ")", "-", "(", "7", "+", "8", ")", ")", "+",
             # "(", "(", "3", "+", "50", ")", "-", "(", "7", "+", "8", ")", ")", "+",
@@ -74,31 +75,52 @@ class FirstAbstractionLevel(Scene):
             vo.square.stretch_to_fit_width(0.7)
 
             self.num_stack.add(VGroup(vo.tex, vo.square))
-            num_array_eles = [e[0].copy() for e in self.num_stack]
+
+
+            num_stack_list = [e[0].copy() for e in self.num_stack]
 
             if (self.num_array):
                 self.remove(self.num_array)
 
-            # len_num_array = len(num_array_eles)
+            smth = create_array(2, self.num_stack)
+            self.add(smth)
+            result = None
+            # len_num_array = len(num_stack_list)
             black_placeholder = None
-            if (len(num_array_eles) == self.num_arr_size):
+            if (len(num_stack_list) == self.num_arr_size):
                 self.num_arr_size = self.num_arr_size * 2
                 black_placeholder = create_placeholders(self.num_arr_size)
+                #black_len = self.num_arr_size - len(num_stack_list)
+                #placeholder = create_placeholders(black_len)
+                #result = num_stack_list + placeholder
+                result = num_stack_list
 
-            black_len = self.num_arr_size - len(num_array_eles)
-
-            placeholder = create_placeholders(black_len)
-
-            result = num_array_eles + placeholder
+            else:
+                black_len = self.num_arr_size - len(num_stack_list)
+                placeholder = create_placeholders(black_len)
+                result = num_stack_list + placeholder
 
             self.num_array = MobjectTable(
-                [result], include_outer_lines=True).scale(0.5).to_edge(DOWN)
+                [result], include_outer_lines=True).scale(0.5).next_to(my_point + DOWN * 2)
+            
             self.add(self.num_array)
+
+            
 
             if (black_placeholder):
                 self.temp_array = MobjectTable(
-                    [black_placeholder], include_outer_lines=True).scale(0.5).next_to(self.num_array, direction=DOWN)
+                    [black_placeholder], include_outer_lines=True).scale(0.5).next_to(my_point + DOWN * 3)
                 self.add(self.temp_array)
+                numbers_to_move = VGroup()
+                for e in num_stack_list:
+                    numbers_to_move.add(e)
+
+                self.play(numbers_to_move.animate.shift(DOWN*1))
+                
+                # smth = num_stack_list + create_placeholders(2)
+                # self.temp_array = MobjectTable(
+                #     [smth], include_outer_lines=True).scale(0.5).next_to(self.num_array, direction=DOWN)
+                # self.play(Transform(mobject=self.num_array, target_mobject=self.temp_array)) 
 
             target_position = self.num_stack[-1].get_top()
             item_to_move = self.num_stack[-1]

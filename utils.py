@@ -27,6 +27,34 @@ def create_placeholders(n: int):
         return res
 
     for i in range(n):
-        e = Text("_").set_color(BLACK)
+        e = Text("1").set_color(BLACK)
         res.append(e)
     return res
+
+def create_array(n:int, num_stack:VGroup):
+    num_list = [e[0].copy() for e in num_stack]
+    square_list = VGroup()
+    for i in range(n):
+        print("i: ", i)
+        if i < len(num_list):
+            rect = Rectangle(width=0.7, height=0.5)
+            num = num_list[i].move_to(rect)
+            sq = VGroup(rect, num)
+        else:
+            sq = VGroup(Rectangle(width=0.7, height=0.5), Text("1").set_color(BLACK))
+
+        square_list.add(sq)
+
+    for i in range (len(square_list)):
+        if i == 0:
+            square_list[i].move_to(DOWN)
+            
+        else:
+            square_list[i].next_to(square_list[i - 1], RIGHT, buff=0)
+    
+    return square_list
+
+
+    
+
+

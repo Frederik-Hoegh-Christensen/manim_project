@@ -11,7 +11,7 @@ class FirstAbstractionLevel(Scene):
         self.add(line)
         self.wait(1)
         self.expression_list = [
-            "(", "10", "+", "5", ")"
+            "(", "10", "+", "5", "+", "5", ")"
             # "(", "(", "3", "+", "50", ")", "-", "(", "7", "+", "8", ")", ")", "+",
             # "(", "(", "3", "+", "50", ")", "-", "(", "7", "+", "8", ")", ")", "+",
             # "(", "(", "3", "+", "50", ")", "-", "(", "7", "+", "8", ")", ")", "+",
@@ -64,6 +64,7 @@ class FirstAbstractionLevel(Scene):
 
         self.currOperatorStack = []
         self.eval_squares = []
+        self.smth = None
 
         # Play the operand table and set its entries to color BLACK to show an empty table
 
@@ -75,52 +76,6 @@ class FirstAbstractionLevel(Scene):
             vo.square.stretch_to_fit_width(0.7)
 
             self.num_stack.add(VGroup(vo.tex, vo.square))
-
-
-            num_stack_list = [e[0].copy() for e in self.num_stack]
-
-            if (self.num_array):
-                self.remove(self.num_array)
-
-            smth = create_array(2, self.num_stack)
-            self.add(smth)
-            result = None
-            # len_num_array = len(num_stack_list)
-            black_placeholder = None
-            if (len(num_stack_list) == self.num_arr_size):
-                self.num_arr_size = self.num_arr_size * 2
-                black_placeholder = create_placeholders(self.num_arr_size)
-                #black_len = self.num_arr_size - len(num_stack_list)
-                #placeholder = create_placeholders(black_len)
-                #result = num_stack_list + placeholder
-                result = num_stack_list
-
-            else:
-                black_len = self.num_arr_size - len(num_stack_list)
-                placeholder = create_placeholders(black_len)
-                result = num_stack_list + placeholder
-
-            self.num_array = MobjectTable(
-                [result], include_outer_lines=True).scale(0.5).next_to(my_point + DOWN * 2)
-            
-            self.add(self.num_array)
-
-            
-
-            if (black_placeholder):
-                self.temp_array = MobjectTable(
-                    [black_placeholder], include_outer_lines=True).scale(0.5).next_to(my_point + DOWN * 3)
-                self.add(self.temp_array)
-                numbers_to_move = VGroup()
-                for e in num_stack_list:
-                    numbers_to_move.add(e)
-
-                self.play(numbers_to_move.animate.shift(DOWN*1))
-                
-                # smth = num_stack_list + create_placeholders(2)
-                # self.temp_array = MobjectTable(
-                #     [smth], include_outer_lines=True).scale(0.5).next_to(self.num_array, direction=DOWN)
-                # self.play(Transform(mobject=self.num_array, target_mobject=self.temp_array)) 
 
             target_position = self.num_stack[-1].get_top()
             item_to_move = self.num_stack[-1]
@@ -143,6 +98,17 @@ class FirstAbstractionLevel(Scene):
             self.num_stack.arrange(
                 buff=0,
                 direction=UP).to_corner(DL + (UP * 0.5))
+
+            update_array()
+            # num_stack_list = [e[0].copy() for e in self.num_stack]
+
+            # if (self.num_array):
+            #     self.remove(self.num_array)
+
+            # self.smth = num_stack_list + create_placeholders(2)
+            # self.temp_array = MobjectTable(
+            #     [self.smth], include_outer_lines=True).scale(0.5).next_to(self.num_array, direction=DOWN)
+            # self.play(Transform(mobject=self.num_array, target_mobject=self.temp_array))
 
         def push_ope():
             vo = Visual_object()
@@ -209,7 +175,7 @@ class FirstAbstractionLevel(Scene):
             # popped_ele1 = self.currNumStack.pop()
 
             if self.eval_squares == []:
-                target_position = DOWN + RIGHT * 1
+                target_position = RIGHT
             else:
                 temp_element = self.eval_squares[-1]
                 target_position = temp_element.get_left() + LEFT
@@ -221,7 +187,7 @@ class FirstAbstractionLevel(Scene):
             )
 
             self.wait(0.5)
-
+            update_array()
             return popped_ele1
 
         def pop_ope():
@@ -232,7 +198,7 @@ class FirstAbstractionLevel(Scene):
             self.ope_stack.remove(original)
 
             if self.eval_squares == []:
-                target_position = DOWN + RIGHT * 2
+                target_position = RIGHT * 2
             else:
                 temp_element = self.eval_squares[-1]
                 target_position = temp_element.get_left() + LEFT
@@ -290,6 +256,33 @@ class FirstAbstractionLevel(Scene):
             self.play(self.expression_group.animate.shift(shift_vector))
             self.wait(0.5)
 
+        def update_array():
+
+            if (self.smth):
+                self.remove(self.smth)
+
+            self.smth = create_array(self.num_arr_size, self.num_stack)
+            self.add(self.smth)
+
+            if (self.num_arr_size == len(self.num_stack)):
+                self.num_arr_size = self.num_arr_size * 2
+                tmp_arr = create_array(
+                    self.num_arr_size).next_to(self.smth, DOWN)
+                self.wait(0.5)
+                self.add(tmp_arr)
+                var1 = self.smth[0][1].copy()
+                var2 = self.smth[1][1].copy()
+                self.play(var1.animate.move_to(tmp_arr[0]),
+                          var2.animate.move_to(tmp_arr[1]))
+                self.wait(0.5)
+                self.play(FadeOut(self.smth))
+                target_p = self.smth.get_center()
+                self.remove(self.smth, tmp_arr, var1, var2)
+                self.smth = create_array(
+                    self.num_arr_size, self.num_stack).move_to(tmp_arr)
+                self.add(self.smth)
+                self.play(self.smth.animate.move_to(target_p))
+
         for i in range(len(self.expression_list)):
 
             next_elem = self.expression_group[0].copy()
@@ -314,7 +307,6 @@ class FirstAbstractionLevel(Scene):
             elif int(self.expression_list[self.counter]):
                 self.expression_group.remove(self.expression_group[0])
                 push_num(next_elem)
-
                 self.counter += 1
 
             if (len(self.expression_group) == 0):

@@ -32,12 +32,12 @@ def create_placeholders(n: int):
     return res
 
 
-def create_array(n: int, num_stack: VGroup = []):
+def create_array(n: int, str: str, num_stack: VGroup = []):
 
     num_list = [e[0].copy() for e in num_stack]
     square_list = VGroup()
     for i in range(n):
-        
+
         if i < len(num_list):
             rect = Rectangle(width=0.7, height=0.5)
             num = num_list[i].move_to(rect)
@@ -54,4 +54,8 @@ def create_array(n: int, num_stack: VGroup = []):
         else:
             square_list[i].next_to(square_list[i - 1], RIGHT, buff=0)
 
-    return square_list
+    if str == 'num':
+
+        return square_list.shift(LEFT*2)
+    else:
+        return square_list.shift(RIGHT*2)

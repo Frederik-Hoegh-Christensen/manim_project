@@ -57,7 +57,6 @@ class FirstAbstractionLevel(Scene):
         # ACTUAL STACKS
         self.num_stack = VGroup()
         self.ope_stack = VGroup()
-        
 
         self.num_arr_size = 2
 
@@ -65,7 +64,7 @@ class FirstAbstractionLevel(Scene):
         self.eval_squares = []
         # Arrays
         self.current_number_array = None
-        self.current_ope_array= None
+        self.current_ope_array = None
 
         # Play the operand table and set its entries to color BLACK to show an empty table
 
@@ -141,10 +140,8 @@ class FirstAbstractionLevel(Scene):
             self.ope_stack.arrange(
                 buff=0,
                 direction=UP).to_corner(DR + (UP * 0.5))
-            
-            update_array('ope')
 
-            
+            update_array('ope')
 
         def pop_num():
             original = self.num_stack[-1]
@@ -237,10 +234,11 @@ class FirstAbstractionLevel(Scene):
             self.play(self.expression_group.animate.shift(shift_vector))
             self.wait(0.5)
 
-        def update_array(str : str):
+        def update_array(str: str):
             if str == 'num':
                 stack = self.num_stack
                 array = self.current_number_array
+
             if str == 'ope':
                 stack = self.ope_stack
                 array = self.current_ope_array
@@ -250,19 +248,19 @@ class FirstAbstractionLevel(Scene):
                 array_size = len(array)
                 print('########################################')
                 self.remove(array)
-            
 
             current_elements = VGroup()
             # The current array
             array = create_array(
-                array_size, stack)
+                array_size, str, stack)
+
             self.add(array)
 
             # Doubling of array-size
             if (array_size == len(stack)):
                 array_size = array_size * 2
                 tmp_arr = create_array(
-                    array_size).next_to(array, DOWN)
+                    array_size, str).next_to(array, DOWN)
                 self.wait(0.5)
                 self.add(tmp_arr)
 
@@ -280,16 +278,16 @@ class FirstAbstractionLevel(Scene):
                 target_p = array.get_center()
                 self.remove(array, tmp_arr, *current_elements)
                 array = create_array(
-                    array_size, stack).move_to(tmp_arr)
+                    array_size, str, stack).move_to(tmp_arr)
                 self.add(array)
                 self.play(array.animate.move_to(target_p))
 
             # Halving of array-size when number of elements is 1/4 of the arraysize
             elif ((array_size / 4) == len(stack)):
-                
+
                 array_size = int(array_size / 2)
                 tmp_arr = create_array(
-                    array_size).next_to(array, DOWN)
+                    array_size, str).next_to(array, DOWN)
                 self.wait(0.5)
                 self.add(tmp_arr)
 
@@ -307,7 +305,7 @@ class FirstAbstractionLevel(Scene):
                 target_p = array.get_center()
                 self.remove(array, tmp_arr, *current_elements)
                 array = create_array(
-                    array_size, stack).move_to(tmp_arr)
+                    array_size, str, stack).move_to(tmp_arr)
                 self.add(array)
                 self.play(array.animate.move_to(target_p))
 
@@ -315,7 +313,6 @@ class FirstAbstractionLevel(Scene):
                 self.current_number_array = array
             if str == 'ope':
                 self.current_ope_array = array
-        
 
         for i in range(len(self.expression_list)):
 

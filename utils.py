@@ -37,7 +37,7 @@ def create_array(n: int, num_stack: VGroup = []):
     num_list = [e[0].copy() for e in num_stack]
     square_list = VGroup()
     for i in range(n):
-        print("i: ", i)
+        
         if i < len(num_list):
             rect = Rectangle(width=0.7, height=0.5)
             num = num_list[i].move_to(rect)

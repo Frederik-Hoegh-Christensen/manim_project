@@ -53,7 +53,7 @@ class FirstAbstractionLevel(Scene):
         self.currNumStack = []
 
         # self.add(self.num_array)
-        
+
         # ACTUAL STACKS
         self.num_stack = VGroup()
         self.ope_stack = VGroup()
@@ -263,7 +263,8 @@ class FirstAbstractionLevel(Scene):
 
             current_elements = VGroup()
             # The current array
-            self.current_array = create_array(self.num_arr_size, self.num_stack)
+            self.current_array = create_array(
+                self.num_arr_size, self.num_stack)
             self.add(self.current_array)
 
             # Doubling of array-size
@@ -273,26 +274,27 @@ class FirstAbstractionLevel(Scene):
                     self.num_arr_size).next_to(self.current_array, DOWN)
                 self.wait(0.5)
                 self.add(tmp_arr)
-                
-                for i in range (len(self.num_stack)):
+
+                for i in range(len(self.num_stack)):
                     current_elements.add(self.current_array[i][1].copy())
 
-                #var1 = self.current_array[0][1].copy()
-                #var2 = self.current_array[1][1].copy()
-
-                
-                self.play(current_elements.animate.align_to(tmp_arr, LEFT))
+                # var1 = self.current_array[0][1].copy()
+                # var2 = self.current_array[1][1].copy()
+                move_elements = [e.animate.move_to(t) for e, t in zip(
+                    current_elements, tmp_arr[0:len(current_elements)])]
+                self.play(*move_elements)
+                # self.play(current_elements.animate.align_to(tmp_arr, LEFT))
                 self.wait(0.5)
                 self.play(FadeOut(self.current_array))
                 target_p = self.current_array.get_center()
-                self.remove(self.current_array, tmp_arr, current_elements)
+                self.remove(self.current_array, tmp_arr, *current_elements)
                 self.current_array = create_array(
                     self.num_arr_size, self.num_stack).move_to(tmp_arr)
                 self.add(self.current_array)
                 self.play(self.current_array.animate.move_to(target_p))
 
             # Halving of array-size when number of elements is 1/4 of the arraysize
-            elif((self.num_arr_size / 4) == len(self.num_stack)):
+            elif ((self.num_arr_size / 4) == len(self.num_stack)):
                 print(self.num_arr_size)
                 self.num_arr_size = int(self.num_arr_size / 2)
                 tmp_arr = create_array(
@@ -300,28 +302,23 @@ class FirstAbstractionLevel(Scene):
                 self.wait(0.5)
                 self.add(tmp_arr)
 
-                for i in range (len(self.num_stack)):
+                for i in range(len(self.num_stack)):
                     current_elements.add(self.current_array[i][1].copy())
 
-                #var1 = self.current_array[0][1].copy()
-                #var2 = self.current_array[1][1].copy()
-                self.play(current_elements.animate.align_to(tmp_arr, LEFT))
+                # var1 = self.current_array[0][1].copy()
+                # var2 = self.current_array[1][1].copy()
+                move_elements = [e.animate.move_to(t) for e, t in zip(
+                    current_elements, tmp_arr[0:len(current_elements)])]
+                self.play(*move_elements)
+                # self.play(current_elements.animate.align_to(tmp_arr, LEFT))
                 self.wait(0.5)
                 self.play(FadeOut(self.current_array))
                 target_p = self.current_array.get_center()
-                self.remove(self.current_array, tmp_arr, current_elements)
+                self.remove(self.current_array, tmp_arr, *current_elements)
                 self.current_array = create_array(
                     self.num_arr_size, self.num_stack).move_to(tmp_arr)
                 self.add(self.current_array)
                 self.play(self.current_array.animate.move_to(target_p))
-
-                
-
-            
-            
-            
-        
-                
 
         for i in range(len(self.expression_list)):
 

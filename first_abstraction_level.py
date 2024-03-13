@@ -53,7 +53,7 @@ class FirstAbstractionLevel(Scene):
         self.currNumStack = []
 
         # self.add(self.num_array)
-
+        
         # ACTUAL STACKS
         self.num_stack = VGroup()
         self.ope_stack = VGroup()
@@ -64,7 +64,7 @@ class FirstAbstractionLevel(Scene):
 
         self.currOperatorStack = []
         self.eval_squares = []
-        self.smth = None
+        self.current_array = None
 
         # Play the operand table and set its entries to color BLACK to show an empty table
 
@@ -105,9 +105,9 @@ class FirstAbstractionLevel(Scene):
             # if (self.num_array):
             #     self.remove(self.num_array)
 
-            # self.smth = num_stack_list + create_placeholders(2)
+            # self.current_array = num_stack_list + create_placeholders(2)
             # self.temp_array = MobjectTable(
-            #     [self.smth], include_outer_lines=True).scale(0.5).next_to(self.num_array, direction=DOWN)
+            #     [self.current_array], include_outer_lines=True).scale(0.5).next_to(self.num_array, direction=DOWN)
             # self.play(Transform(mobject=self.num_array, target_mobject=self.temp_array))
 
         def push_ope():
@@ -258,30 +258,70 @@ class FirstAbstractionLevel(Scene):
 
         def update_array():
 
-            if (self.smth):
-                self.remove(self.smth)
+            if (self.current_array):
+                self.remove(self.current_array)
 
-            self.smth = create_array(self.num_arr_size, self.num_stack)
-            self.add(self.smth)
+            current_elements = VGroup()
+            # The current array
+            self.current_array = create_array(self.num_arr_size, self.num_stack)
+            self.add(self.current_array)
 
+            # Doubling of array-size
             if (self.num_arr_size == len(self.num_stack)):
                 self.num_arr_size = self.num_arr_size * 2
                 tmp_arr = create_array(
-                    self.num_arr_size).next_to(self.smth, DOWN)
+                    self.num_arr_size).next_to(self.current_array, DOWN)
                 self.wait(0.5)
                 self.add(tmp_arr)
-                var1 = self.smth[0][1].copy()
-                var2 = self.smth[1][1].copy()
-                self.play(var1.animate.move_to(tmp_arr[0]),
-                          var2.animate.move_to(tmp_arr[1]))
+                
+                for i in range (len(self.num_stack)):
+                    current_elements.add(self.current_array[i][1].copy())
+
+                #var1 = self.current_array[0][1].copy()
+                #var2 = self.current_array[1][1].copy()
+
+                
+                self.play(current_elements.animate.align_to(tmp_arr, LEFT))
                 self.wait(0.5)
-                self.play(FadeOut(self.smth))
-                target_p = self.smth.get_center()
-                self.remove(self.smth, tmp_arr, var1, var2)
-                self.smth = create_array(
+                self.play(FadeOut(self.current_array))
+                target_p = self.current_array.get_center()
+                self.remove(self.current_array, tmp_arr, current_elements)
+                self.current_array = create_array(
                     self.num_arr_size, self.num_stack).move_to(tmp_arr)
-                self.add(self.smth)
-                self.play(self.smth.animate.move_to(target_p))
+                self.add(self.current_array)
+                self.play(self.current_array.animate.move_to(target_p))
+
+            # Halving of array-size when number of elements is 1/4 of the arraysize
+            elif((self.num_arr_size / 4) == len(self.num_stack)):
+                print(self.num_arr_size)
+                self.num_arr_size = int(self.num_arr_size / 2)
+                tmp_arr = create_array(
+                    self.num_arr_size).next_to(self.current_array, DOWN)
+                self.wait(0.5)
+                self.add(tmp_arr)
+
+                for i in range (len(self.num_stack)):
+                    current_elements.add(self.current_array[i][1].copy())
+
+                #var1 = self.current_array[0][1].copy()
+                #var2 = self.current_array[1][1].copy()
+                self.play(current_elements.animate.align_to(tmp_arr, LEFT))
+                self.wait(0.5)
+                self.play(FadeOut(self.current_array))
+                target_p = self.current_array.get_center()
+                self.remove(self.current_array, tmp_arr, current_elements)
+                self.current_array = create_array(
+                    self.num_arr_size, self.num_stack).move_to(tmp_arr)
+                self.add(self.current_array)
+                self.play(self.current_array.animate.move_to(target_p))
+
+                
+
+            
+            
+            
+        
+                
 
         for i in range(len(self.expression_list)):
 

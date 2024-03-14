@@ -5,14 +5,14 @@ import copy
 
 class FirstAbstractionLevel(ZoomedScene):
     def construct(self):
-        my_point = LEFT * 2
+        level = 1
         line = Line(start=[- config.frame_width, config.frame_height/3, 0],
                     end=[config.frame_width, config.frame_height/3, 0], stroke_width=4)
         self.add(line)
         self.wait(1)
         self.expression_list = [
-            "(", "10", "+", "5", "+", "5", ")"
-            # "(", "(", "3", "+", "50", ")", "-", "(", "7", "+", "8", ")", ")", "+",
+            #"(", "10", "+", "5", "+", "5", ")"
+            "(", "(", "3", "+", "50", ")", "-", "(", "7", "+", "8", ")", ")", "+",
             # "(", "(", "3", "+", "50", ")", "-", "(", "7", "+", "8", ")", ")", "+",
             # "(", "(", "3", "+", "50", ")", "-", "(", "7", "+", "8", ")", ")", "+",
             # "(", "(", "3", "+", "50", ")", "-", "(", "7", "+", "8", ")", ")", "+",
@@ -39,18 +39,16 @@ class FirstAbstractionLevel(ZoomedScene):
             RIGHT * expression_target_pos_2))
         self.wait(0.5)
 
-        # zoom_animations = [self.camera.frame.animate.scale(
-        #     2), self.animate.move_to(DOWN * 2)]
-        # self.camera.scal
-        self.play(
-            self.camera.frame.animate.scale(
-                scale_factor=2, about_point=UP * 2)
-        )
+        # ZOOM
+        # self.play(
+        #     self.camera.frame.animate.scale(
+        #         scale_factor=2, about_point=UP * 2)
+        # )
 
-        operand_stack = Text('Operandstack', font_size=24)
-        operand_stack.move_to(2 * UP + 5 * LEFT)
-        operator_stack = Text('Operatorstack', font_size=24)
-        operator_stack.move_to(2 * UP + 5 * RIGHT)
+        operand_stack = Text('Operandstack', font_size=20)
+        operand_stack.move_to(2 * UP + 6 * LEFT)
+        operator_stack = Text('Operatorstack', font_size=20)
+        operator_stack.move_to(2 * UP + 6 * RIGHT)
         self.play(Write(operand_stack))
         self.play(Write(operator_stack))
         arrow_end = self.expression_group.get_left()
@@ -58,7 +56,7 @@ class FirstAbstractionLevel(ZoomedScene):
         arrow = Arrow(start=arrow_start, end=arrow_end, buff=0.2)
         self.play(FadeIn(arrow))
 
-        self.currNumStack = []
+        
 
         # self.add(self.num_array)
 
@@ -106,8 +104,9 @@ class FirstAbstractionLevel(ZoomedScene):
             self.num_stack.arrange(
                 buff=0,
                 direction=UP).to_corner(DL + (UP * 0.5))
-
+            
             update_array('num')
+            
             # num_stack_list = [e[0].copy() for e in self.num_stack]
 
             # if (self.num_array):
@@ -148,37 +147,42 @@ class FirstAbstractionLevel(ZoomedScene):
             self.ope_stack.arrange(
                 buff=0,
                 direction=UP).to_corner(DR + (UP * 0.5))
-
+            
             update_array('ope')
 
         def pop_num():
             original = self.num_stack[-1]
-            popped_ele1 = copy.deepcopy(self.num_stack[-1])
+            popped_ele = copy.deepcopy(self.num_stack[-1])
+            self.add(popped_ele)
             self.remove(original)
             self.num_stack.remove(original)
-
-            # popped_ele1 = self.currNumStack.pop()
+            
 
             if self.eval_squares == []:
                 target_position = RIGHT
             else:
                 temp_element = self.eval_squares[-1]
-                target_position = temp_element.get_left() + LEFT
+                target_position = temp_element.get_left() + LEFT * 0.5
 
-            self.eval_squares.append(popped_ele1)
+            self.eval_squares.append(popped_ele[0])
             self.play(
-                popped_ele1.animate.move_to(target_position)
-                # popped_ele1.tex.animate.move_to(target_position)
+                FadeOut(popped_ele[1])
+            )
+            self.remove(popped_ele[1])
+            
+            self.play(
+                popped_ele[0].animate.move_to(target_position)
             )
 
             self.wait(0.5)
             update_array('num')
-            return popped_ele1
+            return popped_ele
 
         def pop_ope():
-            # popped_ele1 = self.currOperatorStack.pop()
+            # popped_ele = self.currOperatorStack.pop()
             original = self.ope_stack[-1]
-            popped_ele1 = copy.deepcopy(original)
+            popped_ele = copy.deepcopy(original)
+            self.add(popped_ele)
             self.remove(original)
             self.ope_stack.remove(original)
 
@@ -186,17 +190,19 @@ class FirstAbstractionLevel(ZoomedScene):
                 target_position = RIGHT * 2
             else:
                 temp_element = self.eval_squares[-1]
-                target_position = temp_element.get_left() + LEFT
+                target_position = temp_element.get_left() + LEFT * 0.5
 
-            self.eval_squares.append(popped_ele1)
+            self.eval_squares.append(popped_ele[0])
+            self.play(FadeOut(popped_ele[1]))
+            self.remove(popped_ele[1])
             self.play(
-                popped_ele1.animate.move_to(target_position),
-                # popped_ele1.square.animate.move_to(target_position)
+                popped_ele[0].animate.move_to(target_position),
+                # popped_ele.square.animate.move_to(target_position)
             )
 
             self.wait(0.5)
             update_array('ope')
-            return popped_ele1
+            return popped_ele
 
         def eval():
 
@@ -229,9 +235,9 @@ class FirstAbstractionLevel(ZoomedScene):
 
             self.play(FadeOut(
                 equals_tex,
-                vo1,  # .tex, vo1.square,
-                ope,  # .tex, ope.square,
-                vo2  # .tex, vo2.square
+                vo1[0],  # .tex, vo1.square,
+                ope[0],  # .tex, ope.square,
+                vo2[0]  # .tex, vo2.square
             ))
             self.eval_squares = []
 
@@ -243,6 +249,11 @@ class FirstAbstractionLevel(ZoomedScene):
             self.wait(0.5)
 
         def update_array(str: str):
+
+            # Do nothing if first abstraction level 
+            if level == 1:
+                return 
+            
             if str == 'num':
                 stack = self.num_stack
                 array = self.current_number_array
@@ -261,6 +272,7 @@ class FirstAbstractionLevel(ZoomedScene):
             array = create_array(
                 array_size, str, stack)
 
+            #array.next_to(self.num_stack.get_bottom(), DOWN * 2)
             self.add(array)
 
             # Doubling of array-size
@@ -322,6 +334,25 @@ class FirstAbstractionLevel(ZoomedScene):
                 self.current_ope_array = array
 
         for i in range(len(self.expression_list)):
+            if i == 5:
+                level = 2
+                self.play(
+                self.camera.frame.animate.scale(
+                    scale_factor=2, about_point=UP * 2)
+                )
+                n_complement = find_nearest_ceiling_power_of_two(len(self.num_stack))
+                self.current_number_array = create_array(n_complement, "num", self.num_stack)
+
+                o_complement = find_nearest_ceiling_power_of_two(len(self.ope_stack))
+                self.current_ope_array = create_array(o_complement, "ope", self.ope_stack)
+
+                self.play(
+                    FadeIn(
+                        self.current_ope_array,
+                        self.current_number_array
+                    )
+                )
+                
 
             next_elem = self.expression_group[0].copy()
 

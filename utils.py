@@ -1,3 +1,4 @@
+import math
 from manim import *
 
 
@@ -32,16 +33,16 @@ def create_placeholders(n: int):
     return res
 
 
-def create_array(n: int, str: str, num_stack: VGroup = []):
+def create_array(n: int, str: str, stack: VGroup = VGroup()):
 
-    num_list = [e[0].copy() for e in num_stack]
+    tex_list = [e[0].copy() for e in stack]
     square_list = VGroup()
     for i in range(n):
 
-        if i < len(num_list):
+        if i < len(tex_list):
             rect = Rectangle(width=0.7, height=0.5)
-            num = num_list[i].move_to(rect)
-            sq = VGroup(rect, num)
+            tex = tex_list[i].move_to(rect)
+            sq = VGroup(rect, tex)
         else:
             sq = VGroup(Rectangle(width=0.7, height=0.5))
 
@@ -54,8 +55,31 @@ def create_array(n: int, str: str, num_stack: VGroup = []):
         else:
             square_list[i].next_to(square_list[i - 1], RIGHT, buff=0)
 
-    if str == 'num':
 
-        return square_list.shift(LEFT*2)
-    else:
-        return square_list.shift(RIGHT*2)
+    if len(stack) == 0:
+        print("#############################################################################")
+        if str == "num":
+            # Hardcoded location for the placement of the number-array
+            print("num, absolute vector:", (stack.get_bottom(), DOWN * 2))
+            print("numstack.getbottom:", stack.get_bottom())
+            return square_list.next_to([-6.26111111, -3.75, 0.], DOWN * 2)
+        if str == "ope":
+            # Hardcoded location for the placement of the opeartor-array
+            print("ope, absolute vector:", (stack.get_bottom(), DOWN * 2))
+            print("ope-stack.getbottom:", stack.get_bottom())
+            
+            return square_list.next_to([6.26111111, -3.75, 0.], DOWN * 2)
+
+    return square_list.next_to(stack.get_bottom(), DOWN * 2)
+
+def find_nearest_ceiling_power_of_two(number):
+    if number <= 1:
+        return 2
+
+    # Check if the number is already a power of two
+    if math.log(number, 2).is_integer():
+        return int(math.pow(2, math.ceil(math.log(number, 2)) + 1))
+    
+    power = math.ceil(math.log(number, 2))
+    return int(math.pow(2, power))
+    

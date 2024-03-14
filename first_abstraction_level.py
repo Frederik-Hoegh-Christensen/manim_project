@@ -3,7 +3,7 @@ from utils import *
 import copy
 
 
-class FirstAbstractionLevel(Scene):
+class FirstAbstractionLevel(ZoomedScene):
     def construct(self):
         my_point = LEFT * 2
         line = Line(start=[- config.frame_width, config.frame_height/3, 0],
@@ -38,6 +38,14 @@ class FirstAbstractionLevel(Scene):
         self.play(self.expression_group.animate.shift(
             RIGHT * expression_target_pos_2))
         self.wait(0.5)
+
+        # zoom_animations = [self.camera.frame.animate.scale(
+        #     2), self.animate.move_to(DOWN * 2)]
+        # self.camera.scal
+        self.play(
+            self.camera.frame.animate.scale(
+                scale_factor=2, about_point=UP * 2)
+        )
 
         operand_stack = Text('Operandstack', font_size=24)
         operand_stack.move_to(2 * UP + 5 * LEFT)
@@ -246,7 +254,6 @@ class FirstAbstractionLevel(Scene):
             array_size = 2
             if (array):
                 array_size = len(array)
-                print('########################################')
                 self.remove(array)
 
             current_elements = VGroup()

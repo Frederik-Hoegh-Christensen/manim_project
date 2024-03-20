@@ -69,6 +69,7 @@ class FirstAbstractionLevel(ZoomedScene):
         # Arrays
         self.current_number_array = None
         self.current_ope_array = None
+        self.main_memory = None
 
         # Play the operand table and set its entries to color BLACK to show an empty table
 
@@ -246,10 +247,28 @@ class FirstAbstractionLevel(ZoomedScene):
             self.wait(0.5)
 
         def create_main_memory():
-            main_memory = create_array(n=40, str="main")
-            main_memory.move_to([0, -6, 0])
+            self.main_memory = create_array(n=40, str="main")
+            self.main_memory.move_to([0, -6, 0])
 
-            return main_memory
+            return self.main_memory
+
+        def update_memory(array):
+            if self.main_memory == None:
+                return
+
+            array_length = len(array)
+
+            for i in range(array_length):
+                if len(array[i]) == 1:
+                    break
+                else:
+                    square = self.main_memory[i]
+                    main_mem_ele = array[i][1].copy()
+                    main_mem_ele.move_to(square)
+                    self.main_memory[i] = VGroup(main_mem_ele, square)
+
+            self.add(self.main_memory)
+            # print(self.main_memory[0].get_tex_string(), "first number")
 
         def update_array(str: str):
 
@@ -342,7 +361,7 @@ class FirstAbstractionLevel(ZoomedScene):
                 self.current_ope_array = array
         # MAIN LOOP ASG
         for i in range(len(self.expression_list)):
-            if i == 0:
+            if i == 3:
                 level = 2
                 self.play(
                     self.camera.frame.animate.scale(
@@ -366,6 +385,9 @@ class FirstAbstractionLevel(ZoomedScene):
                 )
                 main_mem = create_main_memory()
                 self.add(main_mem)
+
+                self.wait(0.5)
+                update_memory(self.current_number_array)
 
             next_elem = self.expression_group[0].copy()
 

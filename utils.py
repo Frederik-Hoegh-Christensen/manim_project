@@ -57,17 +57,13 @@ def create_array(n: int, str: str, stack: VGroup = VGroup()):
 
 
     if len(stack) == 0:
-        print("#############################################################################")
+        
         if str == "num":
             # Hardcoded location for the placement of the number-array
-            print("num, absolute vector:", (stack.get_bottom(), DOWN * 2))
-            print("numstack.getbottom:", stack.get_bottom())
+            
             return square_list.next_to([-6.26111111, -3.75, 0.], DOWN * 2)
         if str == "ope":
             # Hardcoded location for the placement of the opeartor-array
-            print("ope, absolute vector:", (stack.get_bottom(), DOWN * 2))
-            print("ope-stack.getbottom:", stack.get_bottom())
-            
             return square_list.next_to([6.26111111, -3.75, 0.], DOWN * 2)
 
     return square_list.next_to(stack.get_bottom(), DOWN * 2)

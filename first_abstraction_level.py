@@ -11,11 +11,11 @@ class FirstAbstractionLevel(ZoomedScene):
         self.add(line)
         self.wait(1)
         self.expression_list = [
-            #"(", "10", "+", "5", "+", "5", ")"
-            "(", "(", "3", "+", "50", ")", "-", "(", "7", "+", "8", ")", ")", "+",
-            "(", "(", "3", "+", "50", ")", "-", "(", "7", "+", "8", ")", ")", "+",
-            "(", "(", "3", "+", "50", ")", "-", "(", "7", "+", "8", ")", ")", "+",
-            "(", "(", "3", "+", "50", ")", "-", "(", "7", "+", "8", ")", ")", "+",
+            "(", "10", "+", "5", "+", "5", ")"
+            # "(", "(", "3", "+", "50", ")", "-", "(", "7", "+", "8", ")", ")", "+",
+            # "(", "(", "3", "+", "50", ")", "-", "(", "7", "+", "8", ")", ")", "+",
+            # "(", "(", "3", "+", "50", ")", "-", "(", "7", "+", "8", ")", ")", "+",
+            # "(", "(", "3", "+", "50", ")", "-", "(", "7", "+", "8", ")", ")", "+",
             # "(", "(", "3", "+", "50", ")", "-", "(", "7", "+", "8", ")", ")", "+",
             # "(", "(", "3", "+", "50", ")", "-", "(", "7", "+", "8", ")", ")", "+",
             # "(", "(", "3", "+", "50", ")", "-", "(", "7", "+", "8", ")", ")", "+",
@@ -288,9 +288,13 @@ class FirstAbstractionLevel(ZoomedScene):
 
                 # var1 = array[0][1].copy()
                 # var2 = array[1][1].copy()
-                move_elements = [e.animate.move_to(t) for e, t in zip(
-                    current_elements, tmp_arr[0:len(current_elements)])]
-                self.play(*move_elements)
+                zipped = zip(current_elements, tmp_arr[0:len(current_elements)])
+                for elem, target in zipped:
+                    self.play(elem.animate.move_to(target))
+                    
+                # move_elements = [e.animate.move_to(t) for e, t in zip(
+                #     current_elements, tmp_arr[0:len(current_elements)])]
+                # self.play(*move_elements)
                 # self.play(current_elements.animate.align_to(tmp_arr, LEFT))
                 self.wait(0.5)
                 self.play(FadeOut(array))
@@ -334,7 +338,7 @@ class FirstAbstractionLevel(ZoomedScene):
                 self.current_ope_array = array
 
         for i in range(len(self.expression_list)):
-            if i == 8:
+            if i == 0:
                 level = 2
                 self.play(
                 self.camera.frame.animate.scale(

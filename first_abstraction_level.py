@@ -56,8 +56,6 @@ class FirstAbstractionLevel(ZoomedScene):
         arrow = Arrow(start=arrow_start, end=arrow_end, buff=0.2)
         self.play(FadeIn(arrow))
 
-        
-
         # self.add(self.num_array)
 
         # ACTUAL STACKS
@@ -104,9 +102,9 @@ class FirstAbstractionLevel(ZoomedScene):
             self.num_stack.arrange(
                 buff=0,
                 direction=UP).to_corner(DL + (UP * 0.5))
-            
+
             update_array('num')
-            
+
             # num_stack_list = [e[0].copy() for e in self.num_stack]
 
             # if (self.num_array):
@@ -147,7 +145,7 @@ class FirstAbstractionLevel(ZoomedScene):
             self.ope_stack.arrange(
                 buff=0,
                 direction=UP).to_corner(DR + (UP * 0.5))
-            
+
             update_array('ope')
 
         def pop_num():
@@ -156,7 +154,6 @@ class FirstAbstractionLevel(ZoomedScene):
             self.add(popped_ele)
             self.remove(original)
             self.num_stack.remove(original)
-            
 
             if self.eval_squares == []:
                 target_position = RIGHT
@@ -169,7 +166,7 @@ class FirstAbstractionLevel(ZoomedScene):
                 FadeOut(popped_ele[1])
             )
             self.remove(popped_ele[1])
-            
+
             self.play(
                 popped_ele[0].animate.move_to(target_position)
             )
@@ -249,17 +246,17 @@ class FirstAbstractionLevel(ZoomedScene):
             self.wait(0.5)
 
         def create_main_memory():
-            main_memory = create_array(n=50, str="main")
-            main_memory.to_edge(DOWN)
-            return main_memory
+            main_memory = create_array(n=40, str="main")
+            main_memory.move_to([0, -6, 0])
 
+            return main_memory
 
         def update_array(str: str):
 
-            # Do nothing if first abstraction level 
+            # Do nothing if first abstraction level
             if level == 1:
-                return 
-            
+                return
+
             if str == 'num':
                 stack = self.num_stack
                 array = self.current_number_array
@@ -278,7 +275,7 @@ class FirstAbstractionLevel(ZoomedScene):
             array = create_array(
                 array_size, str, stack)
 
-            #array.next_to(self.num_stack.get_bottom(), DOWN * 2)
+            # array.next_to(self.num_stack.get_bottom(), DOWN * 2)
             self.add(array)
 
             # Doubling of array-size
@@ -294,10 +291,11 @@ class FirstAbstractionLevel(ZoomedScene):
 
                 # var1 = array[0][1].copy()
                 # var2 = array[1][1].copy()
-                zipped = zip(current_elements, tmp_arr[0:len(current_elements)])
+                zipped = zip(current_elements,
+                             tmp_arr[0:len(current_elements)])
                 for elem, target in zipped:
                     self.play(elem.animate.move_to(target))
-                    
+
                 # move_elements = [e.animate.move_to(t) for e, t in zip(
                 #     current_elements, tmp_arr[0:len(current_elements)])]
                 # self.play(*move_elements)
@@ -342,19 +340,23 @@ class FirstAbstractionLevel(ZoomedScene):
                 self.current_number_array = array
             if str == 'ope':
                 self.current_ope_array = array
-        ## MAIN LOOP ASG
+        # MAIN LOOP ASG
         for i in range(len(self.expression_list)):
             if i == 0:
                 level = 2
                 self.play(
-                self.camera.frame.animate.scale(
-                    scale_factor=2, about_point=UP * 2)
+                    self.camera.frame.animate.scale(
+                        scale_factor=2, about_point=UP * 2)
                 )
-                n_complement = find_nearest_ceiling_power_of_two(len(self.num_stack))
-                self.current_number_array = create_array(n_complement, "num", self.num_stack)
+                n_complement = find_nearest_ceiling_power_of_two(
+                    len(self.num_stack))
+                self.current_number_array = create_array(
+                    n_complement, "num", self.num_stack)
 
-                o_complement = find_nearest_ceiling_power_of_two(len(self.ope_stack))
-                self.current_ope_array = create_array(o_complement, "ope", self.ope_stack)
+                o_complement = find_nearest_ceiling_power_of_two(
+                    len(self.ope_stack))
+                self.current_ope_array = create_array(
+                    o_complement, "ope", self.ope_stack)
 
                 self.play(
                     FadeIn(
@@ -364,7 +366,6 @@ class FirstAbstractionLevel(ZoomedScene):
                 )
                 main_mem = create_main_memory()
                 self.add(main_mem)
-                
 
             next_elem = self.expression_group[0].copy()
 

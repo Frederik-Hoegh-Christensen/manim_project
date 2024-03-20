@@ -55,20 +55,22 @@ def create_array(n: int, str: str, stack: VGroup = VGroup()):
         else:
             square_list[i].next_to(square_list[i - 1], RIGHT, buff=0)
 
+    if str == "main":
+        print("we entered the loop")
+        return square_list
 
     if len(stack) == 0:
-        
+
         if str == "num":
             # Hardcoded location for the placement of the number-array
-            
+
             return square_list.next_to([-6.26111111, -3.75, 0.], DOWN * 2)
         if str == "ope":
             # Hardcoded location for the placement of the opeartor-array
             return square_list.next_to([6.26111111, -3.75, 0.], DOWN * 2)
-        else:
-            return square_list
 
     return square_list.next_to(stack.get_bottom(), DOWN * 2)
+
 
 def find_nearest_ceiling_power_of_two(number):
     if number <= 1:
@@ -77,7 +79,6 @@ def find_nearest_ceiling_power_of_two(number):
     # Check if the number is already a power of two
     if math.log(number, 2).is_integer():
         return int(math.pow(2, math.ceil(math.log(number, 2)) + 1))
-    
+
     power = math.ceil(math.log(number, 2))
     return int(math.pow(2, power))
-    

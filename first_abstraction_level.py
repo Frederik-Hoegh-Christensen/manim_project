@@ -248,6 +248,12 @@ class FirstAbstractionLevel(ZoomedScene):
             self.play(self.expression_group.animate.shift(shift_vector))
             self.wait(0.5)
 
+        def create_main_memory():
+            main_memory = create_array(n=50, str="main")
+            main_memory.to_edge(DOWN)
+            return main_memory
+
+
         def update_array(str: str):
 
             # Do nothing if first abstraction level 
@@ -336,7 +342,7 @@ class FirstAbstractionLevel(ZoomedScene):
                 self.current_number_array = array
             if str == 'ope':
                 self.current_ope_array = array
-
+        ## MAIN LOOP ASG
         for i in range(len(self.expression_list)):
             if i == 0:
                 level = 2
@@ -356,6 +362,8 @@ class FirstAbstractionLevel(ZoomedScene):
                         self.current_number_array
                     )
                 )
+                main_mem = create_main_memory()
+                self.add(main_mem)
                 
 
             next_elem = self.expression_group[0].copy()

@@ -65,6 +65,8 @@ def create_array(n: int, str: str, stack: VGroup = VGroup()):
         if str == "ope":
             # Hardcoded location for the placement of the opeartor-array
             return square_list.next_to([6.26111111, -3.75, 0.], DOWN * 2)
+        else:
+            return square_list
 
     return square_list.next_to(stack.get_bottom(), DOWN * 2)
 

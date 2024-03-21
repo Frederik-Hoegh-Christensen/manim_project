@@ -21,6 +21,44 @@ class Visual_object():
         # self.as_string = MathTex(as_string)
         # self.submobjects = [tex, square]
 
+class Main_memory():
+    asger = VGroup(VGroup(Text("10"), Rectangle()), VGroup(Rectangle()))
+    def __init__(self, main_mem : VGroup):
+        self.main_mem = main_mem
+        self.data1 = None
+        self.data2 = None
+        self.helper = []
+        # for i in range (len(self.main_mem)):
+        #     self.helper.add(False)
+
+    def insert(self, array: VGroup):
+        for i in range(len(array)):
+            self.main_mem[i] = array[i]
+        
+
+    def reserve_space(self, n: int):
+        # Iterate through the helper array
+        for i in range(len(self.helper) - n + 1):
+            # Check if the next n elements are all False
+            if all(not self.helper[j] for j in range(i, i + n)):
+                # Change the next n elements to True
+                for j in range(i, i + n):
+                    self.helper[j] = True
+                # Exit the function after reserving the space
+                return True  # Indicates that space was successfully reserved
+        
+        # Return False if there was not enough space to reserve
+        return False
+    
+            
+
+
+
+
+
+    
+        
+
 
 def create_placeholders(n: int):
     res = []
@@ -43,8 +81,11 @@ def create_array(n: int, str: str, stack: VGroup = VGroup()):
             rect = Rectangle(width=0.7, height=0.5)
             tex = tex_list[i].move_to(rect)
             sq = VGroup(rect, tex)
-        else:
+        # TODO consider consuing logic here
+        elif str == "main":
             sq = VGroup(Rectangle(width=0.7, height=0.5))
+        else:
+            sq = VGroup(Rectangle(width=0.7, height=0.5), VMobject(None))
 
         square_list.add(sq)
 

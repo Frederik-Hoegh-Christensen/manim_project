@@ -5,6 +5,8 @@ import copy
 
 class FirstAbstractionLevel(ZoomedScene):
     def construct(self):
+        asger = VGroup(MathTex("k"), VMobject(None))
+        print(asger)
         level = 1
         line = Line(start=[- config.frame_width, config.frame_height/3, 0],
                     end=[config.frame_width, config.frame_height/3, 0], stroke_width=4)

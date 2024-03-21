@@ -21,20 +21,43 @@ class Visual_object():
         # self.as_string = MathTex(as_string)
         # self.submobjects = [tex, square]
 
+
 class Main_memory():
-    asger = VGroup(VGroup(Text("10"), Rectangle()), VGroup(Rectangle()))
-    def __init__(self, main_mem : VGroup):
-        self.main_mem = main_mem
-        self.data1 = None
-        self.data2 = None
-        self.helper = []
+
+    def __init__(self, n: int):
+        self.main_mem = create_array(str="main", n=40).move_to([0, -6, 0])
+        print("Main_length", self.main_mem)
+
         # for i in range (len(self.main_mem)):
         #     self.helper.add(False)
 
+    def find_s(self, length: int):
+        is_free = 0
+        for i in range(len(self.main_mem)):
+            if (len(self.main_mem[i])) == 1:
+                for j in range(length):
+                    if (len(self.main_mem[i+j]) == 1):
+                        is_free += 1
+                    else:
+                        is_free = 0
+                        break
+                    if is_free == (length):
+                        print("index", i)
+                        return i
+
+        print("no free space")
+        return -1
+
     def insert(self, array: VGroup):
+        length = len(array)
+        index = self.find_s(length)
         for i in range(len(array)):
-            self.main_mem[i] = array[i]
-        
+            pos = self.main_mem[index + i].get_center()
+            self.main_mem[index +
+                          i] = array[i].copy().move_to(self.main_mem[index+i])
+
+    def get(self):
+        return self.main_mem
 
     def reserve_space(self, n: int):
         # Iterate through the helper array
@@ -46,18 +69,9 @@ class Main_memory():
                     self.helper[j] = True
                 # Exit the function after reserving the space
                 return True  # Indicates that space was successfully reserved
-        
+
         # Return False if there was not enough space to reserve
         return False
-    
-            
-
-
-
-
-
-    
-        
 
 
 def create_placeholders(n: int):

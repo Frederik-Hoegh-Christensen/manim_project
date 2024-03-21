@@ -71,7 +71,7 @@ class FirstAbstractionLevel(ZoomedScene):
         # Arrays
         self.current_number_array = None
         self.current_ope_array = None
-        self.main_memory = None
+        self.main_memory = Main_memory(40)
 
         # Play the operand table and set its entries to color BLACK to show an empty table
 
@@ -248,30 +248,6 @@ class FirstAbstractionLevel(ZoomedScene):
             self.play(self.expression_group.animate.shift(shift_vector))
             self.wait(0.5)
 
-        def create_main_memory():
-            self.main_memory = create_array(n=40, str="main")
-            self.main_memory.move_to([0, -6, 0])
-
-            return self.main_memory
-
-        def update_memory(array):
-            if self.main_memory == None:
-                return
-
-            array_length = len(array)
-
-            for i in range(array_length):
-                if len(array[i]) == 1:
-                    break
-                else:
-                    square = self.main_memory[i]
-                    main_mem_ele = array[i][1].copy()
-                    main_mem_ele.move_to(square)
-                    self.main_memory[i] = VGroup(main_mem_ele, square)
-
-            self.add(self.main_memory)
-            # print(self.main_memory[0].get_tex_string(), "first number")
-
         def update_array(str: str):
 
             # Do nothing if first abstraction level
@@ -385,11 +361,12 @@ class FirstAbstractionLevel(ZoomedScene):
                         self.current_number_array
                     )
                 )
-                main_mem = create_main_memory()
-                self.add(main_mem)
 
                 self.wait(0.5)
-                update_memory(self.current_number_array)
+
+                self.main_memory.insert(self.current_number_array)
+                self.main_memory.insert(self.current_ope_array)
+                self.add(self.main_memory.get())
 
             next_elem = self.expression_group[0].copy()
 

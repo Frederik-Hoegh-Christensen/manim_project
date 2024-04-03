@@ -5,8 +5,6 @@ import copy
 
 class FirstAbstractionLevel(ZoomedScene):
     def construct(self):
-        asger = VGroup(MathTex("k"), VMobject(None))
-        print(asger)
         level = 1
         line = Line(start=[- config.frame_width, config.frame_height/3, 0],
                     end=[config.frame_width, config.frame_height/3, 0], stroke_width=4)
@@ -71,7 +69,7 @@ class FirstAbstractionLevel(ZoomedScene):
         # Arrays
         self.current_number_array = None
         self.current_ope_array = None
-        self.main_memory = None
+        self.main_memory = Main_memory(40)
 
         # Play the operand table and set its entries to color BLACK to show an empty table
 
@@ -107,6 +105,9 @@ class FirstAbstractionLevel(ZoomedScene):
                 direction=UP).to_corner(DL + (UP * 0.5))
 
             update_array('num')
+            if level > 1:
+                self.main_memory.update(array=self.current_number_array, array_type="num")
+                
 
             # num_stack_list = [e[0].copy() for e in self.num_stack]
 
@@ -150,6 +151,8 @@ class FirstAbstractionLevel(ZoomedScene):
                 direction=UP).to_corner(DR + (UP * 0.5))
 
             update_array('ope')
+            if level > 1:
+                self.main_memory.update(array=self.current_ope_array, array_type="ope")
 
         def pop_num():
             original = self.num_stack[-1]
@@ -176,6 +179,8 @@ class FirstAbstractionLevel(ZoomedScene):
 
             self.wait(0.5)
             update_array('num')
+            if level > 1:
+                self.main_memory.update(array=self.current_number_array, array_type="num")
             return popped_ele
 
         def pop_ope():
@@ -202,6 +207,8 @@ class FirstAbstractionLevel(ZoomedScene):
 
             self.wait(0.5)
             update_array('ope')
+            if level > 1:
+                self.main_memory.update(array=self.current_ope_array, array_type="ope")
             return popped_ele
 
         def eval():
@@ -342,12 +349,10 @@ class FirstAbstractionLevel(ZoomedScene):
                 for i in range(len(stack)):
                     current_elements.add(array[i][1].copy())
 
-                # var1 = array[0][1].copy()
-                # var2 = array[1][1].copy()
                 move_elements = [e.animate.move_to(t) for e, t in zip(
                     current_elements, tmp_arr[0:len(current_elements)])]
                 self.play(*move_elements)
-                # self.play(current_elements.animate.align_to(tmp_arr, LEFT))
+
                 self.wait(0.5)
                 self.play(FadeOut(array))
                 target_p = array.get_center()
@@ -385,11 +390,11 @@ class FirstAbstractionLevel(ZoomedScene):
                         self.current_number_array
                     )
                 )
-                main_mem = create_main_memory()
-                self.add(main_mem)
 
                 self.wait(0.5)
-                update_memory(self.current_number_array)
+                self.main_memory.insert(array=self.current_number_array, array_type="num")
+                self.main_memory.insert(array=self.current_ope_array, array_type="ope")
+                self.add(self.main_memory.get())
 
             next_elem = self.expression_group[0].copy()
 

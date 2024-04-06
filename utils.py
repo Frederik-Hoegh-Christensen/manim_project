@@ -1,5 +1,6 @@
 import math
 from manim import *
+import copy
 
 
 def create_arithmetic_expression(expression_list=None):
@@ -40,7 +41,6 @@ class Main_memory():
                         is_free = 0
                         break
                     if is_free == (length):
-                        print("index", i)
                         return i
 
         print("no free space")
@@ -88,6 +88,24 @@ class Main_memory():
     def remove_data(self, i: int):
         self.main_mem[i].remove(self.main_mem[i][1])
 
+    def get_animation_move(self, length:int, array_type : str):
+        elems = VGroup()
+        animations = []
+        index = self.find_s(length)
+        if array_type == "num":
+            for j, i in enumerate(range(self.num_start_index, self.num_start_index + length), start=0):
+                elem = copy.deepcopy(self.main_mem[i][1])
+                animation = elem.animate.move_to(self.main_mem[index+j])
+                animations.append(animation)
+                elems.add(elem)
+            return elems, animations
+        else:
+            return None, None
+
+
+
+        
+
 
 def create_array(n: int, str: str, stack: VGroup = VGroup()):
 
@@ -115,7 +133,6 @@ def create_array(n: int, str: str, stack: VGroup = VGroup()):
             square_list[i].next_to(square_list[i - 1], RIGHT, buff=0)
 
     if str == "main":
-        print("we entered the loop")
         return square_list
 
     if len(stack) == 0:

@@ -106,18 +106,8 @@ class FirstAbstractionLevel(ZoomedScene):
 
             update_array('num')
             if level > 1:
-                self.main_memory.update(array=self.current_number_array, array_type="num")
-                
-
-            # num_stack_list = [e[0].copy() for e in self.num_stack]
-
-            # if (self.num_array):
-            #     self.remove(self.num_array)
-
-            # self.current_number_array = num_stack_list + create_placeholders(2)
-            # self.temp_array = MobjectTable(
-            #     [self.current_number_array], include_outer_lines=True).scale(0.5).next_to(self.num_array, direction=DOWN)
-            # self.play(Transform(mobject=self.num_array, target_mobject=self.temp_array))
+                self.main_memory.update(
+                    array=self.current_number_array, array_type="num")
 
         def push_ope():
             vo = Visual_object()
@@ -152,7 +142,8 @@ class FirstAbstractionLevel(ZoomedScene):
 
             update_array('ope')
             if level > 1:
-                self.main_memory.update(array=self.current_ope_array, array_type="ope")
+                self.main_memory.update(
+                    array=self.current_ope_array, array_type="ope")
 
         def pop_num():
             original = self.num_stack[-1]
@@ -173,18 +164,25 @@ class FirstAbstractionLevel(ZoomedScene):
             )
             self.remove(popped_ele[1])
 
+            index_tofade = self.main_memory.num_start_index + \
+                len(self.num_stack)
+
             self.play(
+                FadeOut(self.main_memory.main_mem[index_tofade][1]),
                 popped_ele[0].animate.move_to(target_position)
             )
 
             self.wait(0.5)
             update_array('num')
+
             if level > 1:
-                self.main_memory.update(array=self.current_number_array, array_type="num")
+                self.remove(self.main_memory.get())
+                self.add(self.main_memory.get())
+                self.main_memory.update(
+                    array=self.current_number_array, array_type="num")
             return popped_ele
 
         def pop_ope():
-            # popped_ele = self.currOperatorStack.pop()
             original = self.ope_stack[-1]
             popped_ele = copy.deepcopy(original)
             self.add(popped_ele)
@@ -200,15 +198,23 @@ class FirstAbstractionLevel(ZoomedScene):
             self.eval_squares.append(popped_ele[0])
             self.play(FadeOut(popped_ele[1]))
             self.remove(popped_ele[1])
+
+            index_tofade = self.main_memory.ope_start_index + \
+                len(self.ope_stack)
+
             self.play(
-                popped_ele[0].animate.move_to(target_position),
-                # popped_ele.square.animate.move_to(target_position)
+                FadeOut(self.main_memory.main_mem[index_tofade][1]),
+                popped_ele[0].animate.move_to(target_position)
+
             )
 
-            self.wait(0.5)
             update_array('ope')
+
             if level > 1:
-                self.main_memory.update(array=self.current_ope_array, array_type="ope")
+                self.remove(self.main_memory.get())
+                self.add(self.main_memory.get())
+                self.main_memory.update(self.current_ope_array, 'ope')
+
             return popped_ele
 
         def eval():
@@ -255,30 +261,6 @@ class FirstAbstractionLevel(ZoomedScene):
             self.play(self.expression_group.animate.shift(shift_vector))
             self.wait(0.5)
 
-        def create_main_memory():
-            self.main_memory = create_array(n=40, str="main")
-            self.main_memory.move_to([0, -6, 0])
-
-            return self.main_memory
-
-        def update_memory(array):
-            if self.main_memory == None:
-                return
-
-            array_length = len(array)
-
-            for i in range(array_length):
-                if len(array[i]) == 1:
-                    break
-                else:
-                    square = self.main_memory[i]
-                    main_mem_ele = array[i][1].copy()
-                    main_mem_ele.move_to(square)
-                    self.main_memory[i] = VGroup(main_mem_ele, square)
-
-            self.add(self.main_memory)
-            # print(self.main_memory[0].get_tex_string(), "first number")
-
         def update_array(str: str):
 
             # Do nothing if first abstraction level
@@ -317,17 +299,11 @@ class FirstAbstractionLevel(ZoomedScene):
                 for i in range(len(stack)):
                     current_elements.add(array[i][1].copy())
 
-                # var1 = array[0][1].copy()
-                # var2 = array[1][1].copy()
                 zipped = zip(current_elements,
                              tmp_arr[0:len(current_elements)])
                 for elem, target in zipped:
                     self.play(elem.animate.move_to(target))
 
-                # move_elements = [e.animate.move_to(t) for e, t in zip(
-                #     current_elements, tmp_arr[0:len(current_elements)])]
-                # self.play(*move_elements)
-                # self.play(current_elements.animate.align_to(tmp_arr, LEFT))
                 self.wait(0.5)
                 self.play(FadeOut(array))
                 target_p = array.get_center()
@@ -392,8 +368,10 @@ class FirstAbstractionLevel(ZoomedScene):
                 )
 
                 self.wait(0.5)
-                self.main_memory.insert(array=self.current_number_array, array_type="num")
-                self.main_memory.insert(array=self.current_ope_array, array_type="ope")
+                self.main_memory.insert(
+                    array=self.current_number_array, array_type="num")
+                self.main_memory.insert(
+                    array=self.current_ope_array, array_type="ope")
                 self.add(self.main_memory.get())
 
             next_elem = self.expression_group[0].copy()

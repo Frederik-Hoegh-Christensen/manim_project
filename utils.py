@@ -18,22 +18,16 @@ class Visual_object():
     def __init__(self, tex: MathTex = None, square: SurroundingRectangle = None) -> None:
         self.tex = tex
         self.square = square
-        # self.as_string = MathTex(as_string)
-        # self.submobjects = [tex, square]
+
 
 class Main_memory():
 
     def __init__(self, n: int):
         self.main_mem = create_array(str="main", n=n).move_to([0, -6, 0])
-        self.num_array = []
-        self.ope_array = []
+        self.num_array = None
+        self.ope_array = None
         self.num_start_index = 0
         self.ope_start_index = 0
-        
-        #print("Main_length", self.main_mem)
-
-        # for i in range (len(self.main_mem)):
-        #     self.helper.add(False)
 
     def find_s(self, length: int):
         is_free = 0
@@ -52,35 +46,26 @@ class Main_memory():
         print("no free space")
         return -1
 
-    def insert(self, array: VGroup, array_type : str, index : int=None):
+    def insert(self, array: VGroup, array_type: str, index: int = None):
         if index is None:
             index = self.find_s(len(array))
-        # length = len(array)
-        # if array_type == "num" and len(self.num_array) == length:
-        #     index = self.num_start_index
 
-        # elif array_type == "ope" and len(self.ope_array) == length:
-        #     index = self.ope_start_index
-        # else:
-        #     index = self.find_s(length)
-        #index = self.find_s(length)
         for i in range(len(array)):
             pos = self.main_mem[index + i].get_center()
             self.main_mem[index +
                           i] = array[i].copy().move_to(self.main_mem[index+i])
-            
+
         if array_type == "ope":
             self.ope_array = array
             self.ope_start_index = index
         elif array_type == "num":
             self.num_array = array
             self.num_start_index = index
-        
 
     def get(self):
         return self.main_mem
-    
-    def update(self, array : VGroup, array_type : str):
+
+    def update(self, array: VGroup, array_type: str):
         length = len(array)
         index = self.find_s(length=length)
 
@@ -100,42 +85,8 @@ class Main_memory():
 
         self.insert(array=array, array_type=array_type, index=index)
 
-        # if array_type == "ope":
-        #     self.ope_array = array
-        #     self.ope_start_index = index
-        # elif array_type == "num":
-        #     self.num_array = array
-        #     self.num_start_index = index
-
-
-    def remove_data(self, i : int):
+    def remove_data(self, i: int):
         self.main_mem[i].remove(self.main_mem[i][1])
-
-    def reserve_space(self, n: int):
-        # Iterate through the helper array
-        for i in range(len(self.helper) - n + 1):
-            # Check if the next n elements are all False
-            if all(not self.helper[j] for j in range(i, i + n)):
-                # Change the next n elements to True
-                for j in range(i, i + n):
-                    self.helper[j] = True
-                # Exit the function after reserving the space
-                return True  # Indicates that space was successfully reserved
-        
-        # Return False if there was not enough space to reserve
-        return False
-    
-
-
-def create_placeholders(n: int):
-    res = []
-    if n < 1:
-        return res
-
-    for i in range(n):
-        e = Text("1").set_color(BLACK)
-        res.append(e)
-    return res
 
 
 def create_array(n: int, str: str, stack: VGroup = VGroup()):

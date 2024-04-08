@@ -11,7 +11,10 @@ class FirstAbstractionLevel(ZoomedScene):
         self.add(line)
         self.wait(1)
         self.expression_list = [
-            "(", "10", "+", "5", "+", "5", ")"
+            # "+", "9", "+", "3", "+", "2", "+", "4", "-", "6", "+", "7", ")"
+            # , "+", "7", ")"
+            "(", "(", "5", "+", "4", "+", "2", "+", "3", "+", "7", "+", "8", "+", "9", ")", ")", ")", ")", "-", "6", "-", "5", "+", "9", ")"
+            # "(", "10", "+", "5", "+", "5", ")"
             # "(", "(", "3", "+", "50", ")", "-", "(", "7", "+", "8", ")", ")", "+",
             # "(", "(", "3", "+", "50", ")", "-", "(", "7", "+", "8", ")", ")", "+",
             # "(", "(", "3", "+", "50", ")", "-", "(", "7", "+", "8", ")", ")", "+",
@@ -168,16 +171,16 @@ class FirstAbstractionLevel(ZoomedScene):
                 len(self.num_stack)
             index_to_fade_array = len(self.num_stack)
 
-
             self.play(
                 FadeOut(self.main_memory.main_mem[index_to_fade_main_mem][1]),
                 FadeOut(self.current_number_array[index_to_fade_array][1]),
                 popped_ele[0].animate.move_to(target_position)
             )
-            self.current_number_array.remove(self.current_number_array[index_to_fade_array][1])
+            self.current_number_array.remove(
+                self.current_number_array[index_to_fade_array][1])
             self.remove(self.current_number_array)
             self.add(self.current_number_array)
-            
+
             update_array('num')
 
             if level > 1:
@@ -214,7 +217,8 @@ class FirstAbstractionLevel(ZoomedScene):
                 popped_ele[0].animate.move_to(target_position)
 
             )
-            self.current_ope_array.remove(self.current_ope_array[index_to_fade_array][1])
+            self.current_ope_array.remove(
+                self.current_ope_array[index_to_fade_array][1])
             self.remove(self.current_ope_array)
             self.add(self.current_ope_array)
 
@@ -284,7 +288,6 @@ class FirstAbstractionLevel(ZoomedScene):
             if str == 'ope':
                 stack = self.ope_stack
                 array = self.current_ope_array
-            
 
             array_size = 2
             print("#################\narray:", array)
@@ -313,8 +316,20 @@ class FirstAbstractionLevel(ZoomedScene):
 
                 zipped = zip(current_elements,
                              tmp_arr[0:len(current_elements)])
-                for elem, target in zipped:
-                    self.play(elem.animate.move_to(target))
+
+                # move_elements = [e.animate.move_to(t) for e, t in zip(
+                #     current_elements, tmp_arr[0:len(current_elements)])]
+
+                elems, animations = self.main_memory.get_animation_move(
+                    len(stack), str, array_size)
+
+                if animations:
+                    self.add(elems)
+                    for i, (elem, target) in enumerate(zipped):
+                        self.play(elem.animate.move_to(target), animations[i])
+                else:
+                    for elem, target in zipped:
+                        self.play(elem.animate.move_to(target))
 
                 self.wait(0.5)
                 self.play(FadeOut(array))
@@ -324,6 +339,9 @@ class FirstAbstractionLevel(ZoomedScene):
                     array_size, str, stack).move_to(tmp_arr)
                 self.add(array)
                 self.play(array.animate.move_to(target_p))
+
+                if elems:
+                    self.remove(elems)
 
             # Halving of array-size when number of elements is 1/4 of the arraysize
             elif ((array_size / 4) == len(stack)):
@@ -337,21 +355,20 @@ class FirstAbstractionLevel(ZoomedScene):
                 for i in range(len(stack)):
                     current_elements.add(array[i][1].copy())
 
-                elems, animations = self.main_memory.get_animation_move(len(stack), str)
-                
+                zipped = zip(current_elements,
+                             tmp_arr[0:len(current_elements)])
 
-                move_elements = [e.animate.move_to(t) for e, t in zip(
-                    current_elements, tmp_arr[0:len(current_elements)])]
-                #self.play(*move_elements, *animations)
+                elems, animations = self.main_memory.get_animation_move(
+                    len(stack), str, array_size)
 
+                # self.play(*move_elements, *animations)
                 if animations:
                     self.add(elems)
-                    self.play(*move_elements, *animations)
+                    for i, (elem, target) in enumerate(zipped):
+                        self.play(elem.animate.move_to(target), animations[i])
                 else:
-                    self.play(*move_elements)
-
-                
-
+                    for elem, target in zipped:
+                        self.play(elem.animate.move_to(target))
 
                 self.wait(0.5)
                 self.play(FadeOut(array))
@@ -369,7 +386,7 @@ class FirstAbstractionLevel(ZoomedScene):
                 self.current_number_array = array
             if str == 'ope':
                 self.current_ope_array = array
-            
+
         # MAIN LOOP ASG
         for i in range(len(self.expression_list)):
             if i == 3:

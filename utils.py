@@ -88,23 +88,24 @@ class Main_memory():
     def remove_data(self, i: int):
         self.main_mem[i].remove(self.main_mem[i][1])
 
-    def get_animation_move(self, length:int, array_type : str):
-        elems = VGroup()
-        animations = []
-        index = self.find_s(length)
+    def get_animation_move(self, length: int, array_type: str, data_length: int):
         if array_type == "num":
-            for j, i in enumerate(range(self.num_start_index, self.num_start_index + length), start=0):
-                elem = copy.deepcopy(self.main_mem[i][1])
-                animation = elem.animate.move_to(self.main_mem[index+j])
-                animations.append(animation)
-                elems.add(elem)
-            return elems, animations
+            start_index = self.num_start_index
+        elif array_type == "ope":
+            start_index = self.ope_start_index
         else:
             return None, None
 
+        elems = VGroup()
+        animations = []
+        index = self.find_s(data_length)
 
-
-        
+        for j, i in enumerate(range(start_index, start_index + length), start=0):
+            elem = copy.deepcopy(self.main_mem[i][1])
+            animation = elem.animate.move_to(self.main_mem[index+j])
+            animations.append(animation)
+            elems.add(elem)
+        return elems, animations
 
 
 def create_array(n: int, str: str, stack: VGroup = VGroup()):

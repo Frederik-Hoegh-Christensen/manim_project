@@ -24,11 +24,27 @@ class Visual_object():
 class Main_memory():
 
     def __init__(self, n: int):
-        self.main_mem = create_array(str="main", n=n).move_to([0, -6, 0])
+        
+        self.main_mem = create_array(str="main", n=n).move_to([13, -6, 0])
+        start_range = 32 
+        end_range = 64
+
+        # Create rows of main mem
+        for i in range(32, n):
+            self.main_mem[i].next_to(self.main_mem[i-32], DOWN, buff=0.2)
+
+        self.main_mem.move_to([0, self.main_mem.get_y(), 0])
         self.num_array = None
         self.ope_array = None
         self.num_start_index = 0
         self.ope_start_index = 0
+
+    def present(self):
+        p_main_mem = create_array(str="main", n=160).move_to([0, -6, 0])
+        p_main_mem.scale(0.3)
+        p_smth = copy.deepcopy(self.main_mem)
+        transform = ReplacementTransform(p_main_mem, p_smth, run_time=4)
+        return (p_main_mem, p_smth) ,transform
 
     def find_s(self, length: int):
         is_free = 0

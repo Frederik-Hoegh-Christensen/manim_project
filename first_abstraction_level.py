@@ -11,9 +11,8 @@ class FirstAbstractionLevel(ZoomedScene):
         self.add(line)
         self.wait(1)
         self.expression_list = [
-            # "+", "9", "+", "3", "+", "2", "+", "4", "-", "6", "+", "7", ")"
-            # , "+", "7", ")"
-            #"(", "(", "5", "+", "4", "+", "2", "+", "3", "+", "7", "+", "8", "+", "9", ")", ")", ")", ")", "-", "6", "-", "5", "+", "9", ")"
+            
+            #"(", "(", "5", "+", "4", "+", "2", "+", "3", "+", "7", "+", "8", "+", "9", ")", ")", ")", ")", "-", "6", "-", "5", "+", "9", ")", "+", "9", "+", "3", "+", "2", "+", "4", "-", "6", "+", "7", ")", "+", "7", ")"
             "(", "10", "+", "5", "+", "5", ")"
             # "(", "(", "3", "+", "50", ")", "-", "(", "7", "+", "8", ")", ")", "+",
             # "(", "(", "3", "+", "50", ")", "-", "(", "7", "+", "8", ")", ")", "+",
@@ -72,7 +71,7 @@ class FirstAbstractionLevel(ZoomedScene):
         # Arrays
         self.current_number_array = None
         self.current_ope_array = None
-        self.main_memory = Main_memory(40)
+        self.main_memory = Main_memory(160)
 
         # Play the operand table and set its entries to color BLACK to show an empty table
 
@@ -417,7 +416,21 @@ class FirstAbstractionLevel(ZoomedScene):
                     array=self.current_number_array, array_type="num")
                 self.main_memory.insert(
                     array=self.current_ope_array, array_type="ope")
+                
+                # decay_factor = (0.001 / 1) ** (1 / (50 - 1))
+                # for i, elem in enumerate(self.main_memory.get()):
+                #     runtime = 1.0 * (decay_factor ** i)
+                #     self.play(FadeIn(elem, run_time=runtime))
+                # self.add(self.main_memory.get())
+                # self.remove(self.main_memory.get())
+                # self.add(self.main_memory.get())
+                (mem, cop), trans = self.main_memory.present()
+                self.add(mem)
+                self.wait(0.5)
+                self.play(trans)
+                self.add(mem, cop)
                 self.add(self.main_memory.get())
+                self.remove(mem, cop)
 
             next_elem = self.expression_group[0].copy()
 

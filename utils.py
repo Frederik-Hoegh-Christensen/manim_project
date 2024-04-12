@@ -43,8 +43,9 @@ class Main_memory():
         p_main_mem = create_array(str="main", n=160).move_to([0, -6, 0])
         p_main_mem.scale(0.3)
         p_smth = copy.deepcopy(self.main_mem)
-        transform = ReplacementTransform(p_main_mem, p_smth, run_time=4)
-        return (p_main_mem, p_smth) ,transform
+        transform = Transform(p_main_mem, p_smth, run_time=4)
+        
+        return (p_main_mem, p_smth) , transform
 
     def find_s(self, length: int):
         is_free = 0
@@ -68,8 +69,11 @@ class Main_memory():
 
         for i in range(len(array)):
             pos = self.main_mem[index + i].get_center()
-            self.main_mem[index +
-                          i] = array[i].copy().move_to(self.main_mem[index+i])
+            to_del = self.main_mem[index + i][0] 
+            self.main_mem[index + i].remove(to_del)
+            del to_del
+            self.main_mem[index + i] = (array[i].copy().move_to(pos))
+            
 
         if array_type == "ope":
             self.ope_array = array

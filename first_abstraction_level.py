@@ -412,6 +412,7 @@ class FirstAbstractionLevel(ZoomedScene):
                 )
 
                 self.wait(0.5)
+                (mem, cop), trans = self.main_memory.present()
                 self.main_memory.insert(
                     array=self.current_number_array, array_type="num")
                 self.main_memory.insert(
@@ -424,8 +425,7 @@ class FirstAbstractionLevel(ZoomedScene):
                 # self.add(self.main_memory.get())
                 # self.remove(self.main_memory.get())
                 # self.add(self.main_memory.get())
-                (mem, cop), trans = self.main_memory.present()
-                self.add(mem)
+                
                 self.wait(0.5)
                 self.play(trans)
                 self.add(mem, cop)

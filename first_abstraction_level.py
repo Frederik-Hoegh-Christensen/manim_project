@@ -128,7 +128,7 @@ class FirstAbstractionLevel(ZoomedScene):
             if len(self.ope_stack) == 1:
 
                 self.play(
-                    item_to_move.animate.to_corner(DR + (UP * 0.5))
+                    item_to_move.animate.scale(0.5).to_corner(DR + (UP * 0.5))
                 )
 
             else:
@@ -137,7 +137,7 @@ class FirstAbstractionLevel(ZoomedScene):
                     UP * (item_to_move.height / 2)
 
                 self.play(
-                    item_to_move.animate.move_to(target_position)
+                    item_to_move.animate.scale(0.5).move_to(target_position)
 
                 )
 
@@ -176,7 +176,7 @@ class FirstAbstractionLevel(ZoomedScene):
             self.play(
                 FadeOut(self.main_memory.main_mem[index_to_fade_main_mem][1]),
                 FadeOut(self.current_number_array[index_to_fade_array][1]),
-                popped_ele[0].animate.move_to(target_position)
+                popped_ele[0].animate.move_to(target_position).scale(2)
             )
             self.current_number_array.remove(
                 self.current_number_array[index_to_fade_array][1])
@@ -216,7 +216,7 @@ class FirstAbstractionLevel(ZoomedScene):
             self.play(
                 FadeOut(self.main_memory.main_mem[index_to_fade_main_mem][1]),
                 FadeOut(self.current_ope_array[index_to_fade_array][1]),
-                popped_ele[0].animate.move_to(target_position)
+                popped_ele[0].animate.move_to(target_position).scale(2)
 
             )
             self.current_ope_array.remove(
@@ -342,6 +342,8 @@ class FirstAbstractionLevel(ZoomedScene):
                 self.remove(array, tmp_arr, *current_elements)
                 array = create_array(
                     array_size, str, stack).move_to(tmp_arr)
+                for elem in array:
+                    elem[1].scale(2)
                 self.add(array)
                 self.play(array.animate.move_to(target_p))
                 self.wait(1)
@@ -383,6 +385,8 @@ class FirstAbstractionLevel(ZoomedScene):
                 self.remove(array, tmp_arr, *current_elements)
                 array = create_array(
                     array_size, str, stack).move_to(tmp_arr)
+                for elem in array:
+                    elem[1].scale(2)
                 self.add(array)
                 self.play(array.animate.move_to(target_p))
 
@@ -406,11 +410,15 @@ class FirstAbstractionLevel(ZoomedScene):
                     len(self.num_stack))
                 self.current_number_array = create_array(
                     n_complement, "num", self.num_stack)
+                for i in range(len(self.num_stack)):
+                    self.current_number_array[i][1].scale(2)
 
                 o_complement = find_nearest_ceiling_power_of_two(
                     len(self.ope_stack))
                 self.current_ope_array = create_array(
                     o_complement, "ope", self.ope_stack)
+                for i in range(len(self.ope_stack)):
+                    self.current_ope_array[i][1].scale(2)
 
                 self.play(
                     FadeIn(

@@ -11,8 +11,8 @@ class FirstAbstractionLevel(ZoomedScene):
         self.add(line)
         self.wait(1)
         self.expression_list = [
-            
-            #"(", "(", "5", "+", "4", "+", "2", "+", "3", "+", "7", "+", "8", "+", "9", ")", ")", ")", ")", "-", "6", "-", "5", "+", "9", ")", "+", "9", "+", "3", "+", "2", "+", "4", "-", "6", "+", "7", ")", "+", "7", ")"
+
+            # "(", "(", "5", "+", "4", "+", "2", "+", "3", "+", "7", "+", "8", "+", "9", ")", ")", ")", ")", "-", "6", "-", "5", "+", "9", ")", "+", "9", "+", "3", "+", "2", "+", "4", "-", "6", "+", "7", ")", "+", "7", ")"
             "(", "10", "+", "5", "+", "5", ")"
             # "(", "(", "3", "+", "50", ")", "-", "(", "7", "+", "8", ")", ")", "+",
             # "(", "(", "3", "+", "50", ")", "-", "(", "7", "+", "8", ")", ")", "+",
@@ -86,19 +86,22 @@ class FirstAbstractionLevel(ZoomedScene):
 
             target_position = self.num_stack[-1].get_top()
             item_to_move = self.num_stack[-1]
+
             if len(self.num_stack) == 1:
 
                 self.play(
-                    item_to_move.animate.to_corner(DL + (UP * 0.5)),
+                    item_to_move.animate.scale(0.5).to_corner(
+                        DL + (UP * 0.5))
                 )
 
             else:
                 # Position at top of the stack
+
                 target_position = self.num_stack[-2].get_top() + \
                     UP * (item_to_move.height / 2)
 
                 self.play(
-                    item_to_move.animate.move_to(target_position)
+                    item_to_move.animate.scale(0.5).move_to(target_position)
 
                 )
 
@@ -299,6 +302,9 @@ class FirstAbstractionLevel(ZoomedScene):
             array = create_array(
                 array_size, str, stack)
 
+            for elem in array:
+                elem[1].scale(2)
+
             # array.next_to(self.num_stack.get_bottom(), DOWN * 2)
             self.add(array)
 
@@ -338,6 +344,8 @@ class FirstAbstractionLevel(ZoomedScene):
                     array_size, str, stack).move_to(tmp_arr)
                 self.add(array)
                 self.play(array.animate.move_to(target_p))
+                self.wait(1)
+                self.play(Indicate(array))
 
                 if elems:
                     self.remove(elems)
@@ -417,7 +425,7 @@ class FirstAbstractionLevel(ZoomedScene):
                     array=self.current_number_array, array_type="num")
                 self.main_memory.insert(
                     array=self.current_ope_array, array_type="ope")
-                
+
                 # decay_factor = (0.001 / 1) ** (1 / (50 - 1))
                 # for i, elem in enumerate(self.main_memory.get()):
                 #     runtime = 1.0 * (decay_factor ** i)
@@ -425,7 +433,7 @@ class FirstAbstractionLevel(ZoomedScene):
                 # self.add(self.main_memory.get())
                 # self.remove(self.main_memory.get())
                 # self.add(self.main_memory.get())
-                
+
                 self.wait(0.5)
                 self.play(trans)
                 self.add(mem, cop)

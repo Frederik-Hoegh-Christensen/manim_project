@@ -351,6 +351,21 @@ class FirstAbstractionLevel(ZoomedScene):
                 self.wait(0.5)
                 self.add(tmp_arr)
 
+                # Indicate tmp array and the location in MM
+                if level == 3:
+                    length = len(tmp_arr)
+                    start = self.main_memory.find_s(length)
+                    end = start + length
+                    mm_data = copy.deepcopy(self.main_memory.get()[start : end])
+                    self.main_memory.get()[start : end].set_color(BLACK)
+                    self.add(mm_data)
+                    self.play(
+                        Indicate(tmp_arr),
+                        Indicate(mm_data),
+                        run_time=2
+                    )
+                    self.main_memory.get()[start : end].set_color(WHITE)
+                    self.remove(mm_data)
                 for i in range(len(stack)):
                     current_elements.add(array[i][1].copy())
 
@@ -391,7 +406,20 @@ class FirstAbstractionLevel(ZoomedScene):
                     array_size, str).next_to(array, DOWN)
                 self.wait(0.5)
                 self.add(tmp_arr)
-
+                if level == 3:
+                    length = len(tmp_arr)
+                    start = self.main_memory.find_s(length)
+                    end = start + length
+                    mm_data = copy.deepcopy(self.main_memory.get()[start : end])
+                    self.main_memory.get()[start : end].set_color(BLACK)
+                    self.add(mm_data)
+                    self.play(
+                        Indicate(tmp_arr),
+                        Indicate(mm_data),
+                        run_time=2
+                    )
+                    self.main_memory.get()[start : end].set_color(WHITE)
+                    self.remove(mm_data)
                 for i in range(len(stack)):
                     current_elements.add(array[i][1].copy())
 

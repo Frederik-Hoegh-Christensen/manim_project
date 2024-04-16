@@ -13,7 +13,7 @@ class FirstAbstractionLevel(ZoomedScene):
         self.expression_list = [
 
             # "(", "(", "5", "+", "4", "+", "2", "+", "3", "+", "7", "+", "8", "+", "9", ")", ")", ")", ")", "-", "6", "-", "5", "+", "9", ")", "+", "9", "+", "3", "+", "2", "+", "4", "-", "6", "+", "7", ")", "+", "7", ")"
-            "(", "10", "+", "5", "+", "5", ")"
+            "(", "10", "+", "5", "+", "5", ")", ")"
             # "(", "(", "3", "+", "50", ")", "-", "(", "7", "+", "8", ")", ")", "+",
             # "(", "(", "3", "+", "50", ")", "-", "(", "7", "+", "8", ")", ")", "+",
             # "(", "(", "3", "+", "50", ")", "-", "(", "7", "+", "8", ")", ")", "+",
@@ -223,7 +223,7 @@ class FirstAbstractionLevel(ZoomedScene):
                 self.current_ope_array[index_to_fade_array][1])
             self.remove(self.current_ope_array)
             self.add(self.current_ope_array)
-
+            
             update_array('ope')
 
             if level > 1:
@@ -305,11 +305,12 @@ class FirstAbstractionLevel(ZoomedScene):
             for elem in array:
                 elem[1].scale(2)
 
-            # array.next_to(self.num_stack.get_bottom(), DOWN * 2)
             self.add(array)
+            
 
             # Doubling of array-size
             if (array_size == len(stack)):
+                self.main_memory.update(array=array, array_type = str)
                 array_size = array_size * 2
                 tmp_arr = create_array(
                     array_size, str).next_to(array, DOWN)
@@ -321,9 +322,6 @@ class FirstAbstractionLevel(ZoomedScene):
 
                 zipped = zip(current_elements,
                              tmp_arr[0:len(current_elements)])
-
-                # move_elements = [e.animate.move_to(t) for e, t in zip(
-                #     current_elements, tmp_arr[0:len(current_elements)])]
 
                 elems, animations = self.main_memory.get_animation_move(
                     len(stack), str, array_size)

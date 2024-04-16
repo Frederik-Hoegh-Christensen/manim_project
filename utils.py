@@ -51,7 +51,7 @@ class Main_memory():
         if self.num_array:
             start = self.num_start_index
             end = self.num_start_index + len(self.num_array)
-            #tmp = (self.main_mem[start : end])
+
             return start, end
         
         else:
@@ -61,10 +61,12 @@ class Main_memory():
         if self.ope_array:
             start = self.ope_start_index
             end = self.ope_start_index + len(self.ope_array)
-            #tmp = (self.main_mem[self.ope_start_index : self.ope_start_index + len(self.ope_array)])
+
             return start, end
         else:
             return None
+        
+
     def find_s(self, length: int):
         is_free = 0
         for i in range(len(self.main_mem)):
@@ -103,8 +105,9 @@ class Main_memory():
     def get(self):
         return self.main_mem
 
-    def update(self, array: VGroup, array_type: str):
-
+    def update(self, array: VGroup, array_type: str, level:int):
+        if level < 3:
+            return
         length = len(array)
         index = self.find_s(length=length)
         
@@ -127,7 +130,10 @@ class Main_memory():
     def remove_data(self, i: int):
         self.main_mem[i].remove(self.main_mem[i][1])
 
-    def get_animation_move(self, length: int, array_type: str, data_length: int):
+    def get_animation_move(self, length: int, array_type: str, data_length: int, level : int):
+
+        if level < 3:
+            return None, None
         if array_type == "num":
             start_index = self.num_start_index
         elif array_type == "ope":

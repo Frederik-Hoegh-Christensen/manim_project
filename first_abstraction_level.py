@@ -13,7 +13,7 @@ class FirstAbstractionLevel(ZoomedScene):
         self.expression_list = [
 
             # "(", "(", "5", "+", "4", "+", "2", "+", "3", "+", "7", "+", "8", "+", "9", ")", ")", ")", ")", "-", "6", "-", "5", "+", "9", ")", "+", "9", "+", "3", "+", "2", "+", "4", "-", "6", "+", "7", ")", "+", "7", ")"
-            "(", "10", "+", "5", "+", "5", ")", ")"
+            "(", "10", "+", "5", "+", "5", ")"
             # "(", "(", "3", "+", "50", ")", "-", "(", "7", "+", "8", ")", ")", "+",
             # "(", "(", "3", "+", "50", ")", "-", "(", "7", "+", "8", ")", ")", "+",
             # "(", "(", "3", "+", "50", ")", "-", "(", "7", "+", "8", ")", ")", "+",
@@ -345,7 +345,6 @@ class FirstAbstractionLevel(ZoomedScene):
                 self.add(array)
                 self.play(array.animate.move_to(target_p))
                 self.wait(1)
-                self.play(Indicate(array))
 
                 if elems:
                     self.remove(elems)
@@ -432,19 +431,40 @@ class FirstAbstractionLevel(ZoomedScene):
                 self.main_memory.insert(
                     array=self.current_ope_array, array_type="ope")
 
-                # decay_factor = (0.001 / 1) ** (1 / (50 - 1))
-                # for i, elem in enumerate(self.main_memory.get()):
-                #     runtime = 1.0 * (decay_factor ** i)
-                #     self.play(FadeIn(elem, run_time=runtime))
-                # self.add(self.main_memory.get())
-                # self.remove(self.main_memory.get())
-                # self.add(self.main_memory.get())
-
                 self.wait(0.5)
                 self.play(trans)
                 self.add(mem, cop)
                 self.add(self.main_memory.get())
                 self.remove(mem, cop)
+
+                num_start, num_end = self.main_memory.get_numbers()
+                ope_start, ope_end = self.main_memory.get_operators()
+                
+                # Ensuring that the relevant parts of main_mem become black/invisible while indicating copies of the same parts
+                op = self.main_memory.get()[ope_start : ope_end]
+                nu = self.main_memory.get()[num_start : num_end]
+                op_cop = copy.deepcopy(op)
+                num_cop = copy.deepcopy(nu)
+                op.set_color(BLACK)
+                nu.set_color(BLACK)
+
+                self.add(op_cop, num_cop)
+                
+                self.play(
+                    Indicate(num_cop, rate_func=there_and_back_with_pause, run_time=2),
+                    Indicate(self.current_number_array,rate_func=there_and_back_with_pause, run_time=2)
+                )
+               
+                self.play(
+                    Indicate(op_cop,rate_func=there_and_back_with_pause, run_time=2),
+                    Indicate(self.current_ope_array, rate_func=there_and_back_with_pause, run_time=2)
+                    
+                )
+                op.set_color(WHITE)
+                nu.set_color(WHITE)
+                self.remove(op_cop, num_cop)
+
+                #self.remove(mm_ope, mm_num)
 
             next_elem = self.expression_group[0].copy()
 

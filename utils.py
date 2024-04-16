@@ -47,6 +47,24 @@ class Main_memory():
         
         return (p_main_mem, p_smth) , transform
 
+    def get_numbers(self):
+        if self.num_array:
+            start = self.num_start_index
+            end = self.num_start_index + len(self.num_array)
+            #tmp = (self.main_mem[start : end])
+            return start, end
+        
+        else:
+            return None
+        
+    def get_operators(self):
+        if self.ope_array:
+            start = self.ope_start_index
+            end = self.ope_start_index + len(self.ope_array)
+            #tmp = (self.main_mem[self.ope_start_index : self.ope_start_index + len(self.ope_array)])
+            return start, end
+        else:
+            return None
     def find_s(self, length: int):
         is_free = 0
         for i in range(len(self.main_mem)):
@@ -86,9 +104,10 @@ class Main_memory():
         return self.main_mem
 
     def update(self, array: VGroup, array_type: str):
+
         length = len(array)
         index = self.find_s(length=length)
-
+        
         if array_type == "num":
             if len(self.num_array) == length:
                 index = self.num_start_index

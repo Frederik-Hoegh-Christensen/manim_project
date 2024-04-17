@@ -138,10 +138,17 @@ class FirstAbstractionLevel(ZoomedScene):
 
             target_position = self.ope_stack[-1].get_top()
             item_to_move = self.ope_stack[-1]
+
+            if level > 1:
+                stack_size = item_to_move.animate.scale(0.5).to_corner(
+                    DR + (UP * 0.5))
+            else:
+                stack_size = item_to_move.animate.to_corner(DR+(UP * 0.5))
+
             if len(self.ope_stack) == 1:
 
                 self.play(
-                    item_to_move.animate.scale(0.5).to_corner(DR + (UP * 0.5))
+                    stack_size
                 )
 
             else:
@@ -149,8 +156,14 @@ class FirstAbstractionLevel(ZoomedScene):
                 target_position = self.ope_stack[-2].get_top() + \
                     UP * (item_to_move.height / 2)
 
+                if level > 1:
+                    stack_move = item_to_move.animate.scale(
+                        0.5).move_to(target_position)
+                else:
+                    stack_move = item_to_move.animate.move_to(target_position)
+
                 self.play(
-                    item_to_move.animate.scale(0.5).move_to(target_position)
+                    stack_move
 
                 )
 
@@ -481,8 +494,13 @@ class FirstAbstractionLevel(ZoomedScene):
                 self.play(
                     self.camera.frame.animate.scale(
                         scale_factor=1.3, about_point=UP * 2.5),
+                    # Ensuring size matches for 1st ab_level to 2nd ab_level
+
                     self.num_stack.animate.scale(
-                        0.5).to_corner(DL + (UP * 0.5))
+                        0.5).to_corner(DL + (UP * 0.5)),
+
+                    self.ope_stack.animate.scale(
+                        0.5).to_corner(DR + (UP * 0.5))
                 )
                 # for i in range(len(self.num_stack)):
                 #     self.play(self.num_stack[i].animate.scale(0.5))

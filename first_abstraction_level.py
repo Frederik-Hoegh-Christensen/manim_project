@@ -13,7 +13,7 @@ class FirstAbstractionLevel(ZoomedScene):
         self.expression_list = [
 
             # "(", "(", "5", "+", "4", "+", "2", "+", "3", "+", "7", "+", "8", "+", "9", ")", ")", ")", ")", "-", "6", "-", "5", "+", "9", ")", "+", "9", "+", "3", "+", "2", "+", "4", "-", "6", "+", "7", ")", "+", "7", ")"
-            "(", "10", "+", "5", "+", "5", ")"
+            "(", "3", "+", "10", "+", "5", "+", "5", ")"
             # "(", "(", "3", "+", "50", ")", "-", "(", "7", "+", "8", ")", ")", "+",
             # "(", "(", "3", "+", "50", ")", "-", "(", "7", "+", "8", ")", ")", "+",
             # "(", "(", "3", "+", "50", ")", "-", "(", "7", "+", "8", ")", ")", "+",
@@ -87,11 +87,17 @@ class FirstAbstractionLevel(ZoomedScene):
             target_position = self.num_stack[-1].get_top()
             item_to_move = self.num_stack[-1]
 
+            # Variable for control of stack_size according to level
+            if level > 1:
+                stack_size = item_to_move.animate.scale(0.5).to_corner(
+                    DL + (UP * 0.5))
+            else:
+                stack_size = item_to_move.animate.to_corner(DL+(UP * 0.5))
+
             if len(self.num_stack) == 1:
 
                 self.play(
-                    item_to_move.animate.scale(0.5).to_corner(
-                        DL + (UP * 0.5))
+                    stack_size
                 )
 
             else:
@@ -100,8 +106,15 @@ class FirstAbstractionLevel(ZoomedScene):
                 target_position = self.num_stack[-2].get_top() + \
                     UP * (item_to_move.height / 2)
 
+                # control scaling for move
+                if level > 1:
+                    stack_move = item_to_move.animate.scale(
+                        0.5).move_to(target_position)
+                else:
+                    stack_move = item_to_move.animate.move_to(target_position)
+
                 self.play(
-                    item_to_move.animate.scale(0.5).move_to(target_position)
+                    stack_move
 
                 )
 
@@ -174,37 +187,40 @@ class FirstAbstractionLevel(ZoomedScene):
             index_to_fade_array = len(self.num_stack)
             if level == 3:
                 self.play(
-                FadeOut(self.main_memory.main_mem[index_to_fade_main_mem][1]),
-                FadeOut(self.current_number_array[index_to_fade_array][1]),
-                popped_ele[0].animate.move_to(target_position).scale(2)
-                ) 
-                self.current_number_array.remove(self.current_number_array[index_to_fade_array][1])
+                    FadeOut(
+                        self.main_memory.main_mem[index_to_fade_main_mem][1]),
+                    FadeOut(self.current_number_array[index_to_fade_array][1]),
+                    popped_ele[0].animate.move_to(target_position).scale(2)
+                )
+                self.current_number_array.remove(
+                    self.current_number_array[index_to_fade_array][1])
                 self.remove(self.current_number_array)
                 self.add(self.current_number_array)
-                
+
             elif level > 1:
                 self.play(
-                #FadeOut(self.main_memory.main_mem[index_to_fade_main_mem][1]),
-                FadeOut(self.current_number_array[index_to_fade_array][1]),
-                popped_ele[0].animate.move_to(target_position).scale(2)
+                    # FadeOut(self.main_memory.main_mem[index_to_fade_main_mem][1]),
+                    FadeOut(self.current_number_array[index_to_fade_array][1]),
+                    popped_ele[0].animate.move_to(target_position).scale(2)
                 )
-                self.current_number_array.remove(self.current_number_array[index_to_fade_array][1])
+                self.current_number_array.remove(
+                    self.current_number_array[index_to_fade_array][1])
                 self.remove(self.current_number_array)
                 self.add(self.current_number_array)
             else:
                 self.play(
-                    #FadeOut(self.main_memory.main_mem[index_to_fade_main_mem][1]),
-                    #FadeOut(self.current_number_array[index_to_fade_array][1]),
+                    # FadeOut(self.main_memory.main_mem[index_to_fade_main_mem][1]),
+                    # FadeOut(self.current_number_array[index_to_fade_array][1]),
                     popped_ele[0].animate.move_to(target_position).scale(2)
                 )
-            
 
             update_array('num')
             if level == 3:
                 self.remove(self.main_memory.get())
                 self.add(self.main_memory.get())
-                self.main_memory.update(array=self.current_number_array, array_type="num", level=level)
-            
+                self.main_memory.update(
+                    array=self.current_number_array, array_type="num", level=level)
+
             return popped_ele
 
         def pop_ope():
@@ -228,43 +244,44 @@ class FirstAbstractionLevel(ZoomedScene):
                 len(self.ope_stack)
             index_to_fade_array = len(self.ope_stack)
 
-
             if level == 3:
                 self.play(
-                    FadeOut(self.main_memory.main_mem[index_to_fade_main_mem][1]),
+                    FadeOut(
+                        self.main_memory.main_mem[index_to_fade_main_mem][1]),
                     FadeOut(self.current_ope_array[index_to_fade_array][1]),
                     popped_ele[0].animate.move_to(target_position).scale(2)
                 )
-                self.current_ope_array.remove(self.current_ope_array[index_to_fade_array][1])
+                self.current_ope_array.remove(
+                    self.current_ope_array[index_to_fade_array][1])
                 self.remove(self.current_ope_array)
                 self.add(self.current_ope_array)
-                
 
             elif level > 1:
                 self.play(
-                    #FadeOut(self.main_memory.main_mem[index_to_fade_main_mem][1]),
+                    # FadeOut(self.main_memory.main_mem[index_to_fade_main_mem][1]),
                     FadeOut(self.current_ope_array[index_to_fade_array][1]),
                     popped_ele[0].animate.move_to(target_position).scale(2)
 
                 )
-                self.current_ope_array.remove(self.current_ope_array[index_to_fade_array][1])
+                self.current_ope_array.remove(
+                    self.current_ope_array[index_to_fade_array][1])
                 self.remove(self.current_ope_array)
                 self.add(self.current_ope_array)
-            
 
             else:
                 self.play(
-                    #FadeOut(self.main_memory.main_mem[index_to_fade_main_mem][1]),
-                    #FadeOut(self.current_ope_array[index_to_fade_array][1]),
+                    # FadeOut(self.main_memory.main_mem[index_to_fade_main_mem][1]),
+                    # FadeOut(self.current_ope_array[index_to_fade_array][1]),
                     popped_ele[0].animate.move_to(target_position).scale(2)
 
                 )
-            
+
             update_array('ope')
             if level == 3:
                 self.remove(self.main_memory.get())
                 self.add(self.main_memory.get())
-                self.main_memory.update(self.current_ope_array, 'ope', level=level)
+                self.main_memory.update(
+                    self.current_ope_array, 'ope', level=level)
             return popped_ele
 
         def eval():
@@ -340,11 +357,11 @@ class FirstAbstractionLevel(ZoomedScene):
                 elem[1].scale(2)
 
             self.add(array)
-            
 
             # Doubling of array-size
             if (array_size == len(stack)):
-                self.main_memory.update(array=array, array_type = str, level=level)
+                self.main_memory.update(
+                    array=array, array_type=str, level=level)
                 array_size = array_size * 2
                 tmp_arr = create_array(
                     array_size, str).next_to(array, DOWN)
@@ -356,15 +373,15 @@ class FirstAbstractionLevel(ZoomedScene):
                     length = len(tmp_arr)
                     start = self.main_memory.find_s(length)
                     end = start + length
-                    mm_data = copy.deepcopy(self.main_memory.get()[start : end])
-                    self.main_memory.get()[start : end].set_color(BLACK)
+                    mm_data = copy.deepcopy(self.main_memory.get()[start: end])
+                    self.main_memory.get()[start: end].set_color(BLACK)
                     self.add(mm_data)
                     self.play(
                         Indicate(tmp_arr),
                         Indicate(mm_data),
                         run_time=2
                     )
-                    self.main_memory.get()[start : end].set_color(WHITE)
+                    self.main_memory.get()[start: end].set_color(WHITE)
                     self.remove(mm_data)
                 for i in range(len(stack)):
                     current_elements.add(array[i][1].copy())
@@ -410,15 +427,15 @@ class FirstAbstractionLevel(ZoomedScene):
                     length = len(tmp_arr)
                     start = self.main_memory.find_s(length)
                     end = start + length
-                    mm_data = copy.deepcopy(self.main_memory.get()[start : end])
-                    self.main_memory.get()[start : end].set_color(BLACK)
+                    mm_data = copy.deepcopy(self.main_memory.get()[start: end])
+                    self.main_memory.get()[start: end].set_color(BLACK)
                     self.add(mm_data)
                     self.play(
                         Indicate(tmp_arr),
                         Indicate(mm_data),
                         run_time=2
                     )
-                    self.main_memory.get()[start : end].set_color(WHITE)
+                    self.main_memory.get()[start: end].set_color(WHITE)
                     self.remove(mm_data)
                 for i in range(len(stack)):
                     current_elements.add(array[i][1].copy())
@@ -459,12 +476,17 @@ class FirstAbstractionLevel(ZoomedScene):
 
         # MAIN LOOP ASG
         for i in range(len(self.expression_list)):
-            if i == 3:
+            if i == 4:
                 level = 2
                 self.play(
                     self.camera.frame.animate.scale(
-                        scale_factor=1.3, about_point=UP * 2.5)
+                        scale_factor=1.3, about_point=UP * 2.5),
+                    self.num_stack.animate.scale(
+                        0.5).to_corner(DL + (UP * 0.5))
                 )
+                # for i in range(len(self.num_stack)):
+                #     self.play(self.num_stack[i].animate.scale(0.5))
+
                 n_complement = find_nearest_ceiling_power_of_two(
                     len(self.num_stack))
                 self.current_number_array = create_array(
@@ -485,14 +507,14 @@ class FirstAbstractionLevel(ZoomedScene):
                         self.current_number_array
                     )
                 )
-                    
-            if i == 4:
+
+            if i == 7:
                 level = 3
                 self.play(
                     self.camera.frame.animate.scale(
                         scale_factor=1.8, about_point=UP * 2)
                 )
-                
+
                 self.wait(0.5)
                 (mem, cop), trans = self.main_memory.present()
                 self.main_memory.insert(
@@ -508,31 +530,34 @@ class FirstAbstractionLevel(ZoomedScene):
 
                 num_start, num_end = self.main_memory.get_numbers()
                 ope_start, ope_end = self.main_memory.get_operators()
-                
+
                 # Ensuring that the relevant parts of main_mem become black/invisible while indicating copies of the same parts
-                op = self.main_memory.get()[ope_start : ope_end]
-                nu = self.main_memory.get()[num_start : num_end]
+                op = self.main_memory.get()[ope_start: ope_end]
+                nu = self.main_memory.get()[num_start: num_end]
                 op_cop = copy.deepcopy(op)
                 num_cop = copy.deepcopy(nu)
                 op.set_color(BLACK)
                 nu.set_color(BLACK)
 
                 self.add(op_cop, num_cop)
-                
+
                 self.play(
-                    Indicate(num_cop, rate_func=there_and_back_with_pause, run_time=2),
-                    Indicate(self.current_number_array,rate_func=there_and_back_with_pause, run_time=2)
+                    Indicate(
+                        num_cop, rate_func=there_and_back_with_pause, run_time=2),
+                    Indicate(self.current_number_array,
+                             rate_func=there_and_back_with_pause, run_time=2)
                 )
-            
+
                 self.play(
-                    Indicate(op_cop,rate_func=there_and_back_with_pause, run_time=2),
-                    Indicate(self.current_ope_array, rate_func=there_and_back_with_pause, run_time=2)
-                    
+                    Indicate(
+                        op_cop, rate_func=there_and_back_with_pause, run_time=2),
+                    Indicate(self.current_ope_array,
+                             rate_func=there_and_back_with_pause, run_time=2)
+
                 )
                 op.set_color(WHITE)
                 nu.set_color(WHITE)
                 self.remove(op_cop, num_cop)
-
 
             next_elem = self.expression_group[0].copy()
 

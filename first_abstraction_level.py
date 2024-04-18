@@ -80,7 +80,7 @@ class FirstAbstractionLevel(ZoomedScene):
             # vo.tex.font_size = 38.4
             vo.square = SurroundingRectangle(
                 vo.tex, color=BLUE, buff=0.3)
-            vo.square.stretch_to_fit_width(0.7)
+            vo.square.stretch_to_fit_width(1.5)
 
             self.num_stack.add(VGroup(vo.tex, vo.square))
 
@@ -132,7 +132,7 @@ class FirstAbstractionLevel(ZoomedScene):
             vo.tex = self.expression_group[0]
             vo.square = SurroundingRectangle(
                 vo.tex, color=BLUE, buff=0.3)
-            vo.square.stretch_to_fit_width(0.7)
+            vo.square.stretch_to_fit_width(1.5)
 
             self.ope_stack.add(VGroup(vo.tex, vo.square))
 
@@ -306,18 +306,18 @@ class FirstAbstractionLevel(ZoomedScene):
             if ope[0].get_tex_string() == "+":
                 res_string = str(int(vo2[0].get_tex_string()) +
                                  int(vo1[0].get_tex_string()))
-                
+
             elif ope[0].get_tex_string() == "-":
                 res_string = str(int(vo2[0].get_tex_string()) -
                                  int(vo1[0].get_tex_string()))
-                
+
             elif ope[0].get_tex_string() == "x":
                 res_string = str(int(vo2[0].get_tex_string()) *
                                  int(vo1[0].get_tex_string()))
-                
+
             elif ope[0].get_tex_string() == "/":
                 res_string = str(int(int(vo2[0].get_tex_string()) /
-                                  int(vo1[0].get_tex_string())))
+                                     int(vo1[0].get_tex_string())))
 
             equals_tex = MathTex("=")
 
@@ -540,6 +540,7 @@ class FirstAbstractionLevel(ZoomedScene):
                 self.play(
                     self.camera.frame.animate.scale(
                         scale_factor=1.8, about_point=UP * 2)
+
                 )
 
                 self.wait(0.5)
@@ -601,9 +602,9 @@ class FirstAbstractionLevel(ZoomedScene):
                 self.counter += 1
 
             elif (self.expression_list[self.counter] == "+" or
-                   self.expression_list[self.counter] == "-" or
-                   self.expression_list[self.counter] == "x"or
-                   self.expression_list[self.counter] == "/"):
+                  self.expression_list[self.counter] == "-" or
+                  self.expression_list[self.counter] == "x" or
+                  self.expression_list[self.counter] == "/"):
                 push_ope()
                 self.expression_group.remove(self.expression_group[0])
                 self.counter += 1

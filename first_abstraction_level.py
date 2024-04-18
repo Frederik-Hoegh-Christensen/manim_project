@@ -13,7 +13,7 @@ class FirstAbstractionLevel(ZoomedScene):
         self.expression_list = [
 
             # "(", "(", "5", "+", "4", "+", "2", "+", "3", "+", "7", "+", "8", "+", "9", ")", ")", ")", ")", "-", "6", "-", "5", "+", "9", ")", "+", "9", "+", "3", "+", "2", "+", "4", "-", "6", "+", "7", ")", "+", "7", ")"
-            "(", "3", "+", "10", "+", "5", "+", "5", ")"
+            "(", "3", "+", "10", "+", "5", "/", "5", ")"
             # "(", "(", "3", "+", "50", ")", "-", "(", "7", "+", "8", ")", ")", "+",
             # "(", "(", "3", "+", "50", ")", "-", "(", "7", "+", "8", ")", ")", "+",
             # "(", "(", "3", "+", "50", ")", "-", "(", "7", "+", "8", ")", ")", "+",
@@ -306,9 +306,18 @@ class FirstAbstractionLevel(ZoomedScene):
             if ope[0].get_tex_string() == "+":
                 res_string = str(int(vo2[0].get_tex_string()) +
                                  int(vo1[0].get_tex_string()))
+                
             elif ope[0].get_tex_string() == "-":
                 res_string = str(int(vo2[0].get_tex_string()) -
                                  int(vo1[0].get_tex_string()))
+                
+            elif ope[0].get_tex_string() == "x":
+                res_string = str(int(vo2[0].get_tex_string()) *
+                                 int(vo1[0].get_tex_string()))
+                
+            elif ope[0].get_tex_string() == "/":
+                res_string = str(int(int(vo2[0].get_tex_string()) /
+                                  int(vo1[0].get_tex_string())))
 
             equals_tex = MathTex("=")
 
@@ -591,7 +600,10 @@ class FirstAbstractionLevel(ZoomedScene):
                 self.expression_group.remove(self.expression_group[0])
                 self.counter += 1
 
-            elif (self.expression_list[self.counter] == "+" or self.expression_list[self.counter] == "-"):
+            elif (self.expression_list[self.counter] == "+" or
+                   self.expression_list[self.counter] == "-" or
+                   self.expression_list[self.counter] == "x"or
+                   self.expression_list[self.counter] == "/"):
                 push_ope()
                 self.expression_group.remove(self.expression_group[0])
                 self.counter += 1

@@ -80,7 +80,9 @@ class FirstAbstractionLevel(ZoomedScene):
             # vo.tex.font_size = 38.4
             vo.square = SurroundingRectangle(
                 vo.tex, color=BLUE, buff=0.3)
+            print("square before:", vo.square.get_width())
             vo.square.stretch_to_fit_width(1.5)
+            print("after:", vo.square.get_width())
 
             self.num_stack.add(VGroup(vo.tex, vo.square))
 
@@ -88,16 +90,22 @@ class FirstAbstractionLevel(ZoomedScene):
             item_to_move = self.num_stack[-1]
 
             # Variable for control of stack_size according to level
-            if level > 1:
-                stack_size = item_to_move.animate.scale(0.5).to_corner(
-                    DL + (UP * 0.5))
-            else:
-                stack_size = item_to_move.animate.to_corner(DL+(UP * 0.5))
 
             if len(self.num_stack) == 1:
+                if level == 3:
+                    stack_size = [item_to_move.animate.scale(0.5).to_corner(
+                        DL + (UP * 0.5)), item_to_move.animate.stretch_to_fit_height(0.5)]
+
+                elif level == 2:
+                    stack_size = [item_to_move.animate.scale(0.5).to_corner(
+                        DL + (UP * 0.5))]
+
+                else:
+                    stack_size = [
+                        item_to_move.animate.to_corner(DL+(UP * 0.5))]
 
                 self.play(
-                    stack_size
+                    *stack_size
                 )
 
             else:
@@ -107,16 +115,32 @@ class FirstAbstractionLevel(ZoomedScene):
                     UP * (item_to_move.height / 2)
 
                 # control scaling for move
-                if level > 1:
+                if level == 3:
+                    stack_width = self.num_stack[-2].width
+                    print("S_width", stack_width)
+                    stack_height = self.num_stack[-2].height
+
+                    # width = item_to_move.match_width(self.num_stack[-2])
+                    # self.play(item_to_move.animate.stretch_to_fit_height(
+                    #     self.num_stack[-2].height))
+
+                    # ensuring new height matches
+                    target_position = self.num_stack[-2].get_top() + \
+                        UP * (item_to_move.height / 2)
+
+                    stack_move = item_to_move.animate.stretch_to_fit_width(
+                        self.num_stack[-2].width).stretch_to_fit_height(
+                        self.num_stack[-2].height).move_to(target_position)
+
+                elif level == 2:
                     stack_move = item_to_move.animate.scale(
                         0.5).move_to(target_position)
                 else:
                     stack_move = item_to_move.animate.move_to(target_position)
 
-                self.play(
-                    stack_move
+                self.play(stack_move)
 
-                )
+                print("item_width:", item_to_move.width)
 
             self.num_stack.arrange(
                 buff=0,
@@ -539,7 +563,9 @@ class FirstAbstractionLevel(ZoomedScene):
                 level = 3
                 self.play(
                     self.camera.frame.animate.scale(
-                        scale_factor=1.8, about_point=UP * 2)
+                        scale_factor=1.8, about_point=UP * 2),
+                    self.num_stack.animate.stretch_to_fit_height(0.5),
+                    self.ope_stack.animate.stretch_to_fit_height(0.5)
 
                 )
 

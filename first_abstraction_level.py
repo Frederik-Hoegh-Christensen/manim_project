@@ -13,7 +13,7 @@ class FirstAbstractionLevel(ZoomedScene):
         self.expression_list = [
 
             # "(", "(", "5", "+", "4", "+", "2", "+", "3", "+", "7", "+", "8", "+", "9", ")", ")", ")", ")", "-", "6", "-", "5", "+", "9", ")", "+", "9", "+", "3", "+", "2", "+", "4", "-", "6", "+", "7", ")", "+", "7", ")"
-            "(", "3", "+", "10", "+", "5", "/", "5", ")"
+            "(", "3", "+", "10", ")", "+", "5", "/", "5", ")"
             # "(", "(", "3", "+", "50", ")", "-", "(", "7", "+", "8", ")", ")", "+",
             # "(", "(", "3", "+", "50", ")", "-", "(", "7", "+", "8", ")", ")", "+",
             # "(", "(", "3", "+", "50", ")", "-", "(", "7", "+", "8", ")", ")", "+",
@@ -224,7 +224,7 @@ class FirstAbstractionLevel(ZoomedScene):
                 self.play(
                     # FadeOut(self.main_memory.main_mem[index_to_fade_main_mem][1]),
                     # FadeOut(self.current_number_array[index_to_fade_array][1]),
-                    popped_ele[0].animate.move_to(target_position).scale(2)
+                    popped_ele[0].animate.move_to(target_position)
                 )
 
             update_array('num')
@@ -285,7 +285,7 @@ class FirstAbstractionLevel(ZoomedScene):
                 self.play(
                     # FadeOut(self.main_memory.main_mem[index_to_fade_main_mem][1]),
                     # FadeOut(self.current_ope_array[index_to_fade_array][1]),
-                    popped_ele[0].animate.move_to(target_position).scale(2)
+                    popped_ele[0].animate.move_to(target_position)
 
                 )
 
@@ -498,7 +498,7 @@ class FirstAbstractionLevel(ZoomedScene):
 
         # MAIN LOOP ASG
         for i in range(len(self.expression_list)):
-            if i == 4:
+            if i == 6:
                 level = 2
                 self.play(
                     self.camera.frame.animate.scale(

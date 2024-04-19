@@ -4,7 +4,7 @@ import copy
 
 
 class FirstAbstractionLevel(ZoomedScene):
-    
+
     def construct(self):
         TEX_SIZE = 0.27417184000000105
         level = 1
@@ -12,19 +12,32 @@ class FirstAbstractionLevel(ZoomedScene):
                     end=[config.frame_width, config.frame_height/3, 0], stroke_width=4)
         self.add(line)
         self.wait(1)
-        self.expression_list = [
+        expression_string = """( (3+5+7+(2x2) - 8/2)     
+          +4+1 - 4 / 2)+ 5 + 3x4 -9)) +6 -4+8+2+ 4 + 6 - 1 + 8 / 2 ) + 3 )))    
+        - 5 + 9 + 2 + 3 x 2) + 7 + 4 - 1 + 8/4) x 2 + 3 - 1) + 7 - 2 + 9x1 - 3 + 8 - 1 x 1 + 9 - 3 + 3/3 + 5 )))))         )"""
 
-            # "(", "(", "5", "+", "4", "+", "2", "+", "3", "+", "7", "+", "8", "+", "9", ")", ")", ")", ")", "-", "6", "-", "5", "+", "9", ")", "+", "9", "+", "3", "+", "2", "+", "4", "-", "6", "+", "7", ")", "+", "7", ")"
-            "(", "3", "+", "10", ")", "+", "5", "/", "5", ")", ")"
-            # "(", "(", "3", "+", "50", ")", "-", "(", "7", "+", "8", ")", ")", "+",
-            # "(", "(", "3", "+", "50", ")", "-", "(", "7", "+", "8", ")", ")", "+",
-            # "(", "(", "3", "+", "50", ")", "-", "(", "7", "+", "8", ")", ")", "+",
-            # "(", "(", "3", "+", "50", ")", "-", "(", "7", "+", "8", ")", ")", "+",
-            # "(", "(", "3", "+", "50", ")", "-", "(", "7", "+", "8", ")", ")", "+",
-            # "(", "(", "3", "+", "50", ")", "-", "(", "7", "+", "8", ")", ")", "+",
-            # "(", "(", "3", "+", "50", ")", "-", "(", "7", "+", "8", ")", ")", "+",
-            # "(", "(", "3", "+", "50", ")", "-", "(", "7", "+", "8", ")", ")"
-        ]
+        no_spaces_string = ''.join(expression_string.split())
+        minus_test_string = "(9-7-)"
+        no_spaces_minus = ''.join(expression_string.split())
+        # expression_string.replace(" ", "")
+        self.expression_list = [*minus_test_string]
+
+        print("expression_list_length", len(self.expression_list))
+
+       # print("list", no_spaces_string)
+        # self.expression_list = [
+
+        #     # "(", "(", "5", "+", "4", "+", "2", "+", "3", "+", "7", "+", "8", "+", "9", ")", ")", ")", ")", "-", "6", "-", "5", "+", "9", ")", "+", "9", "+", "3", "+", "2", "+", "4", "-", "6", "+", "7", ")", "+", "7", ")"
+        #     "(", "2"  # "3", "+", "10", ")", "+", "5", "/", "5", ")", ")"
+        #     # "(", "(", "3", "+", "50", ")", "-", "(", "7", "+", "8", ")", ")", "+",
+        #     # "(", "(", "3", "+", "50", ")", "-", "(", "7", "+", "8", ")", ")", "+",
+        #     # "(", "(", "3", "+", "50", ")", "-", "(", "7", "+", "8", ")", ")", "+",
+        #     # "(", "(", "3", "+", "50", ")", "-", "(", "7", "+", "8", ")", ")", "+",
+        #     # "(", "(", "3", "+", "50", ")", "-", "(", "7", "+", "8", ")", ")", "+",
+        #     # "(", "(", "3", "+", "50", ")", "-", "(", "7", "+", "8", ")", ")", "+",
+        #     # "(", "(", "3", "+", "50", ")", "-", "(", "7", "+", "8", ")", ")", "+",
+        #     # "(", "(", "3", "+", "50", ")", "-", "(", "7", "+", "8", ")", ")"
+        # ]
         self.counter = 0
         self.arrow = None
         self.expression_group = create_arithmetic_expression(
@@ -73,7 +86,7 @@ class FirstAbstractionLevel(ZoomedScene):
         # Arrays
         self.current_number_array = None
         self.current_ope_array = None
-        self.main_memory = Main_memory(160)
+        self.main_memory = Main_memory(320)
 
         # Play the operand table and set its entries to color BLACK to show an empty table
 
@@ -102,8 +115,8 @@ class FirstAbstractionLevel(ZoomedScene):
                         DL + (UP * 0.5))
 
                 else:
-                    push_animation = item_to_move.animate.to_corner(DL+(UP * 0.5))
-
+                    push_animation = item_to_move.animate.to_corner(
+                        DL+(UP * 0.5))
 
             else:
                 # Position at top of the stack
@@ -125,10 +138,10 @@ class FirstAbstractionLevel(ZoomedScene):
                     push_animation = item_to_move.animate.scale(
                         0.5).move_to(target_position)
                 else:
-                    push_animation = item_to_move.animate.move_to(target_position)
+                    push_animation = item_to_move.animate.move_to(
+                        target_position)
 
-
-            self.play(push_animation)            
+            self.play(push_animation)
             print("############## \n x coord stack = ", self.num_stack.get_x())
             arrange_animation = self.num_stack.animate.arrange(
                 buff=0,
@@ -151,17 +164,18 @@ class FirstAbstractionLevel(ZoomedScene):
             target_position = self.ope_stack[-1].get_top()
             item_to_move = self.ope_stack[-1]
 
-            
             if len(self.ope_stack) == 1:
                 if level == 3:
-                    push_animation = item_to_move.animate.to_corner(DR + (UP * 0.5)).stretch_to_fit_width(0.75).stretch_to_fit_height(0.2)
+                    push_animation = item_to_move.animate.to_corner(
+                        DR + (UP * 0.5)).stretch_to_fit_width(0.75).stretch_to_fit_height(0.2)
 
                 elif level == 2:
-                    push_animation = item_to_move.animate.scale(0.5).to_corner(DR + (UP * 0.5))
+                    push_animation = item_to_move.animate.scale(
+                        0.5).to_corner(DR + (UP * 0.5))
 
                 else:
-                    push_animation =item_to_move.animate.to_corner(DR+(UP * 0.5))
-
+                    push_animation = item_to_move.animate.to_corner(
+                        DR+(UP * 0.5))
 
             else:
                 # Position at top of the stack
@@ -183,9 +197,9 @@ class FirstAbstractionLevel(ZoomedScene):
                     push_animation = item_to_move.animate.scale(
                         0.5).move_to(target_position)
                 else:
-                    push_animation = item_to_move.animate.move_to(target_position)
+                    push_animation = item_to_move.animate.move_to(
+                        target_position)
 
-                
             self.play(push_animation)
 
             arrange_animation = self.ope_stack.animate.arrange(
@@ -225,7 +239,8 @@ class FirstAbstractionLevel(ZoomedScene):
                     FadeOut(
                         self.main_memory.main_mem[index_to_fade_main_mem][1]),
                     FadeOut(self.current_number_array[index_to_fade_array][1]),
-                    popped_ele[0].animate.move_to(target_position).scale(3).stretch_to_fit_height(TEX_SIZE*1.33)
+                    popped_ele[0].animate.move_to(target_position).scale(
+                        3).stretch_to_fit_height(TEX_SIZE*1.33)
                 )
                 self.current_number_array.remove(
                     self.current_number_array[index_to_fade_array][1])
@@ -284,7 +299,8 @@ class FirstAbstractionLevel(ZoomedScene):
                     FadeOut(
                         self.main_memory.main_mem[index_to_fade_main_mem][1]),
                     FadeOut(self.current_ope_array[index_to_fade_array][1]),
-                    popped_ele[0].animate.move_to(target_position).scale(3).stretch_to_fit_height(TEX_SIZE*1.333)
+                    popped_ele[0].animate.move_to(target_position).scale(
+                        3).stretch_to_fit_height(TEX_SIZE*1.333)
                 )
                 self.current_ope_array.remove(
                     self.current_ope_array[index_to_fade_array][1])
@@ -357,7 +373,6 @@ class FirstAbstractionLevel(ZoomedScene):
             res_tex.font_size = 38.4
             if level == 3:
                 res_tex.font_size = 45
-                
 
             self.play(FadeIn(res_tex))
 
@@ -392,7 +407,7 @@ class FirstAbstractionLevel(ZoomedScene):
                 array = self.current_ope_array
 
             array_size = 2
-            
+
             if (array):
                 array_size = len(array)
                 self.remove(array)
@@ -403,7 +418,16 @@ class FirstAbstractionLevel(ZoomedScene):
                 array_size, str, stack)
 
             for elem in array:
-                elem[1].scale(2).stretch_to_fit_height(TEX_SIZE)
+                try:
+                    if elem[1].get_tex_string() == "-":
+
+                        elem[1].scale(2)
+                    else:
+                        elem[1].scale(2).stretch_to_fit_height(TEX_SIZE)
+
+                except:
+
+                    elem[1].scale(2).stretch_to_fit_height(TEX_SIZE)
 
             self.add(array)
 
@@ -455,8 +479,18 @@ class FirstAbstractionLevel(ZoomedScene):
                 self.remove(array, tmp_arr, *current_elements)
                 array = create_array(
                     array_size, str, stack).move_to(tmp_arr)
+
                 for elem in array:
-                    elem[1].scale(2).stretch_to_fit_height(TEX_SIZE)
+                    try:
+                        if elem[1].get_tex_string() == "-":
+
+                            elem[1].scale(2)
+                        else:
+                            elem[1].scale(2).stretch_to_fit_height(TEX_SIZE)
+
+                    except:
+
+                        elem[1].scale(2).stretch_to_fit_height(TEX_SIZE)
                 self.add(array)
                 self.play(array.animate.move_to(target_p))
                 self.wait(1)
@@ -510,8 +544,18 @@ class FirstAbstractionLevel(ZoomedScene):
                 self.remove(array, tmp_arr, *current_elements)
                 array = create_array(
                     array_size, str, stack).move_to(tmp_arr)
+
                 for elem in array:
-                    elem[1].scale(2).stretch_to_fit_height(TEX_SIZE)
+                    try:
+                        if elem[1].get_tex_string() == "-":
+
+                            elem[1].scale(2)
+                        else:
+                            elem[1].scale(2).stretch_to_fit_height(TEX_SIZE)
+
+                    except:
+
+                        elem[1].scale(2).stretch_to_fit_height(TEX_SIZE)
                 self.add(array)
                 self.play(array.animate.move_to(target_p))
 
@@ -525,7 +569,7 @@ class FirstAbstractionLevel(ZoomedScene):
 
         # MAIN LOOP ASG
         for i in range(len(self.expression_list)):
-            if i == 6:
+            if i == 1:
                 level = 2
                 self.play(
                     self.camera.frame.animate.scale(
@@ -562,10 +606,12 @@ class FirstAbstractionLevel(ZoomedScene):
                     )
                 )
 
-            if i == 8:
+            if i == 3:
                 level = 3
-                animate_num_stack = [elem.animate.stretch_to_fit_height(0.2) for elem in self.num_stack]
-                animate_ope_stack = [elem.animate.stretch_to_fit_height(0.2) for elem in self.ope_stack]
+                animate_num_stack = [elem.animate.stretch_to_fit_height(
+                    0.2) for elem in self.num_stack]
+                animate_ope_stack = [elem.animate.stretch_to_fit_height(
+                    0.2) for elem in self.ope_stack]
                 align_num_stack = []
                 # for i in range(self.num_stack):
                 #     if i == 0:
@@ -576,14 +622,16 @@ class FirstAbstractionLevel(ZoomedScene):
                 self.play(
                     self.camera.frame.animate.scale(
                         scale_factor=1.8, about_point=UP * 3),
-                    #self.num_stack.animate.stretch_to_fit_height(0.5),
-                    #self.ope_stack.animate.stretch_to_fit_height(0.5)
+                    # self.num_stack.animate.stretch_to_fit_height(0.5),
+                    # self.ope_stack.animate.stretch_to_fit_height(0.5)
                     *animate_num_stack,
                     *animate_ope_stack,
                 )
                 self.play(
-                     self.num_stack.animate.arrange(buff=0, direction=UP).to_corner(DL + (UP * 0.5)),
-                     self.ope_stack.animate.arrange(buff=0, direction=UP).to_corner(DR + (UP * 0.5))
+                    self.num_stack.animate.arrange(
+                        buff=0, direction=UP).to_corner(DL + (UP * 0.5)),
+                    self.ope_stack.animate.arrange(
+                        buff=0, direction=UP).to_corner(DR + (UP * 0.5))
                 )
 
                 self.wait(0.5)

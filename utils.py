@@ -24,10 +24,8 @@ class Visual_object():
 class Main_memory():
 
     def __init__(self, n: int):
-        
+
         self.main_mem = create_array(str="main", n=n).move_to([13, -6, 0])
-        start_range = 32 
-        end_range = 64
 
         # Create rows of main mem
         for i in range(32, n):
@@ -40,12 +38,12 @@ class Main_memory():
         self.ope_start_index = 0
 
     def present(self):
-        p_main_mem = create_array(str="main", n=160).move_to([0, -6, 0])
+        p_main_mem = create_array(str="main", n=320).move_to([0, -6, 0])
         p_main_mem.scale(0.3)
         p_smth = copy.deepcopy(self.main_mem)
         transform = Transform(p_main_mem, p_smth, run_time=4)
-        
-        return (p_main_mem, p_smth) , transform
+
+        return (p_main_mem, p_smth), transform
 
     def get_numbers(self):
         if self.num_array:
@@ -53,10 +51,10 @@ class Main_memory():
             end = self.num_start_index + len(self.num_array)
 
             return start, end
-        
+
         else:
             return None
-        
+
     def get_operators(self):
         if self.ope_array:
             start = self.ope_start_index
@@ -65,7 +63,6 @@ class Main_memory():
             return start, end
         else:
             return None
-        
 
     def find_s(self, length: int):
         is_free = 0
@@ -89,11 +86,10 @@ class Main_memory():
 
         for i in range(len(array)):
             pos = self.main_mem[index + i].get_center()
-            to_del = self.main_mem[index + i][0] 
+            to_del = self.main_mem[index + i][0]
             self.main_mem[index + i].remove(to_del)
             del to_del
             self.main_mem[index + i] = (array[i].copy().move_to(pos))
-            
 
         if array_type == "ope":
             self.ope_array = array
@@ -105,12 +101,12 @@ class Main_memory():
     def get(self):
         return self.main_mem
 
-    def update(self, array: VGroup, array_type: str, level:int):
+    def update(self, array: VGroup, array_type: str, level: int):
         if level < 3:
             return
         length = len(array)
         index = self.find_s(length=length)
-        
+
         if array_type == "num":
             if len(self.num_array) == length:
                 index = self.num_start_index
@@ -130,7 +126,7 @@ class Main_memory():
     def remove_data(self, i: int):
         self.main_mem[i].remove(self.main_mem[i][1])
 
-    def get_animation_move(self, length: int, array_type: str, data_length: int, level : int):
+    def get_animation_move(self, length: int, array_type: str, data_length: int, level: int):
 
         if level < 3:
             return None, None

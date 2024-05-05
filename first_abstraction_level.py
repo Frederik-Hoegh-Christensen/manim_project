@@ -20,7 +20,15 @@ class FirstAbstractionLevel(ZoomedScene):
         minus_test_string = "(9-7-)"
         no_spaces_minus = ''.join(expression_string.split())
         # expression_string.replace(" ", "")
-        self.expression_list = [*minus_test_string]
+        self.test_exp = [
+            # First abstraction level
+            "(", "(", "3", "(", "+", "(", "6", "-", "(", "2", "x", "3", ")", "+", "20", ")", "-", "(", "5", "-", ")", "(","(", "10", "/", "2",")",
+            ")", "+",")", "(", "11", "x", "2", ")", "-", "10", "+", "1", ")", ")", "-", "7", ")", "-", "3", "+", #45 <- 4 elements in num stack, 3 elements in ope stack
+            "31", "+",
+            # Second abstraction level
+            "1", "+", "1", "-" "1", "+", "1", "+", "1", "+", "1", "+", "1", "+", "1", "+", "1", "+", "1", "+", "1"
+        ]
+        self.expression_list = self.test_exp
 
         print("expression_list_length", len(self.expression_list))
 
@@ -293,15 +301,37 @@ class FirstAbstractionLevel(ZoomedScene):
             index_to_fade_main_mem = self.main_memory.ope_start_index + \
                 len(self.ope_stack)
             index_to_fade_array = len(self.ope_stack)
-
+            
             if level == 3:
-                self.play(
-                    FadeOut(
-                        self.main_memory.main_mem[index_to_fade_main_mem][1]),
-                    FadeOut(self.current_ope_array[index_to_fade_array][1]),
-                    popped_ele[0].animate.move_to(target_position).scale(
-                        3).stretch_to_fit_height(TEX_SIZE*1.333)
-                )
+
+                try:
+                    if popped_ele[0].get_tex_string() == "-":
+
+                        self.play(
+                            FadeOut(
+                                self.main_memory.main_mem[index_to_fade_main_mem][1]),
+                            FadeOut(self.current_ope_array[index_to_fade_array][1]),
+                            popped_ele[0].animate.move_to(target_position).scale(
+                                3).stretch_to_fit_height(0.05)
+                        )
+                    else:
+                        self.play(
+                            FadeOut(
+                                self.main_memory.main_mem[index_to_fade_main_mem][1]),
+                            FadeOut(self.current_ope_array[index_to_fade_array][1]),
+                            popped_ele[0].animate.move_to(target_position).scale(
+                                3).stretch_to_fit_height(TEX_SIZE*1.333)
+                        )
+
+                except:
+
+                    self.play(
+                        FadeOut(
+                            self.main_memory.main_mem[index_to_fade_main_mem][1]),
+                        FadeOut(self.current_ope_array[index_to_fade_array][1]),
+                        popped_ele[0].animate.move_to(target_position).scale(
+                            3).stretch_to_fit_height(TEX_SIZE*1.333)
+                    )
                 self.current_ope_array.remove(
                     self.current_ope_array[index_to_fade_array][1])
                 self.remove(self.current_ope_array)
@@ -421,7 +451,7 @@ class FirstAbstractionLevel(ZoomedScene):
                 try:
                     if elem[1].get_tex_string() == "-":
 
-                        elem[1].scale(2)
+                        elem[1].scale(2).stretch_to_fit_height(0.05)
                     else:
                         elem[1].scale(2).stretch_to_fit_height(TEX_SIZE)
 
@@ -484,7 +514,7 @@ class FirstAbstractionLevel(ZoomedScene):
                     try:
                         if elem[1].get_tex_string() == "-":
 
-                            elem[1].scale(2)
+                            elem[1].scale(2).stretch_to_fit_height(0.05)
                         else:
                             elem[1].scale(2).stretch_to_fit_height(TEX_SIZE)
 
@@ -549,7 +579,7 @@ class FirstAbstractionLevel(ZoomedScene):
                     try:
                         if elem[1].get_tex_string() == "-":
 
-                            elem[1].scale(2)
+                            elem[1].scale(2).stretch_to_fit_height(0.05)
                         else:
                             elem[1].scale(2).stretch_to_fit_height(TEX_SIZE)
 
@@ -569,7 +599,7 @@ class FirstAbstractionLevel(ZoomedScene):
 
         # MAIN LOOP ASG
         for i in range(len(self.expression_list)):
-            if i == 1:
+            if i == 45:
                 level = 2
                 self.play(
                     self.camera.frame.animate.scale(
@@ -606,7 +636,7 @@ class FirstAbstractionLevel(ZoomedScene):
                     )
                 )
 
-            if i == 3:
+            if i == 100:
                 level = 3
                 animate_num_stack = [elem.animate.stretch_to_fit_height(
                     0.2) for elem in self.num_stack]

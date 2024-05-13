@@ -3,6 +3,7 @@ from utils import *
 import copy
 
 
+asger = 1
 class FirstAbstractionLevel(ZoomedScene):
 
     def construct(self):
@@ -22,11 +23,21 @@ class FirstAbstractionLevel(ZoomedScene):
         # expression_string.replace(" ", "")
         self.test_exp = [
             # First abstraction level
-            "(", "(", "3", "(", "+", "(", "6", "-", "(", "2", "x", "3", ")", "+", "20", ")", "-", "(", "5", "-", ")", "(","(", "10", "/", "2",")",
-            ")", "+",")", "(", "11", "x", "2", ")", "-", "10", "+", "1", ")", ")", "-", "7", ")", "-", "3", "+", #45 <- 4 elements in num stack, 3 elements in ope stack
-            "31", "+",
+            "(", "(", "(", "3", "(", "(", "(", "+", "(", "6", "-", "(", "2", "x", "3", ")", "+", "30", ")", "-", "(", "5", "-", "1", ")", "+", "(","(", "10", "/", "2",")",
+            ")", "+", "(", "11", "x", "2", ")", ")", "-", "6", "+", "1", ")", ")", "-", "7", ")", "-", "3", ")", "+", #45 <- 3 elements in num stack, 2 elements in ope stack
+            "(", "31", "-",
             # Second abstraction level
-            "1", "+", "1", "-" "1", "+", "1", "+", "1", "+", "1", "+", "1", "+", "1", "+", "1", "+", "1", "+", "1"
+            "12", ")", ")", ")", ")", ")", "+", "(", "(", "52" # <--- 7 elements in number stack
+            
+            , "+", "(", "30", "-", "26",
+            # Third Abstraction level
+            ")", ")", "-", "14", ")", "+", "(","(", "4", "x", "(", "18", "-", "16", ")", ")",
+            "/", "2", ")", "-", "(", "(", "22", "-", "19", ")",")", "+",  # <--- 3 elements in number and ope
+            "(", "(", "(", "25", "x", "2", ")", "-", "31", "+", "15", "+", "4", "+", "1", "-", "88", "/", "4", ")", "-", "(", "3", "x",
+            "6", ")", ")", "+", "9", "+", "3", ")" , ")", ")", ")", ")", ")", ")", ")", ")", ")"
+
+
+
         ]
         self.expression_list = self.test_exp
 
@@ -597,9 +608,9 @@ class FirstAbstractionLevel(ZoomedScene):
             if str == 'ope':
                 self.current_ope_array = array
 
-        # MAIN LOOP ASG
+        # MAIN LOOP
         for i in range(len(self.expression_list)):
-            if i == 45:
+            if i == 30:
                 level = 2
                 self.play(
                     self.camera.frame.animate.scale(
@@ -636,7 +647,7 @@ class FirstAbstractionLevel(ZoomedScene):
                     )
                 )
 
-            if i == 100:
+            if i == 60:
                 level = 3
                 animate_num_stack = [elem.animate.stretch_to_fit_height(
                     0.2) for elem in self.num_stack]
@@ -738,4 +749,5 @@ class FirstAbstractionLevel(ZoomedScene):
             if (len(self.expression_group) == 0):
                 self.wait(1)
                 break
+
             shift_expression_left()

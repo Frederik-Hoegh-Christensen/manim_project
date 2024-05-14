@@ -4,7 +4,7 @@ This repository contains the code for a bachelors project with the title: Animat
 # How to generate the video with manim-CLI:
 
 ```sh
-manim -pql .\first_abstraction_level.py FirstAbstractionLevel
+manim -pql .\dtsa.py DtsaScene
 ```
 
-##
+
